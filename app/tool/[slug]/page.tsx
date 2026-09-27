@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { notFound, redirect, RedirectType } from 'next/navigation';
 import { DEMO_PRESET_TOOLS, DEMO_PRESET_CATEGORIES, DEMO_PRESET_SUBCATEGORIES } from '../../../src/lib/demo-presets';
 import { generateToolWebApplicationSchema, generateFaqPageSchema, generateBreadcrumbSchema } from '../../../src/lib/schema-generator';
 import { PublicToolDetailClient } from './ToolClientComponent';
@@ -11,12 +11,16 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === slug);
+  const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === slug || (t.redirectFrom && t.redirectFrom.includes(slug)));
 
   if (!tool) {
     return {
       title: 'Tool Not Found | Veritas SEO',
       description: 'The requested technical SEO tool could not be found.',
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
@@ -25,6 +29,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: tool.seo?.metaTitle || `${tool.title} | Veritas SEO`,
     description: tool.seo?.metaDescription || tool.shortSummary,
+    robots: {
+      index: tool.seo?.noIndex ? false : true,
+      follow: tool.seo?.noFollow ? false : true,
+    },
     alternates: {
       canonical: canonicalUrl,
     },
@@ -45,9 +53,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ToolPage({ params }: Props) {
   const { slug } = await params;
+
+  // Server-Side HTTP 301 Redirect Check for Slug Changes
+  const redirectTool = DEMO_PRESET_TOOLS.find((t) => t.redirectFrom && t.redirectFrom.includes(slug));
+  if (redirectTool && redirectTool.slug !== slug) {
+    redirect(`/tool/${redirectTool.slug}`, RedirectType.replace);
+  }
+
   const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === slug);
 
-  if (!tool) {
+  if (!tool || tool.isPublished === false) {
     notFound();
   }
 
@@ -85,7 +100,27 @@ export default async function ToolPage({ params }: Props) {
       {/* Semantic HTML5 Server Structure */}
       <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-950 text-slate-100 focus:outline-none">
         <article className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <header className="mb-8">
+          <nav aria-label="Breadcrumb Navigation" className="mb-6">
+            <ol className="flex items-center space-x-2 text-sm text-slate-400 font-mono">
+              <li>
+                <a href="/" className="hover:text-emerald-400 transition-colors">Home</a>
+              </li>
+              {category && (
+                <>
+                  <li>/</li>
+                  <li>
+                    <a href={`/category/${category.slug}`} className="hover:text-emerald-400 transition-colors">
+                      {category.name}
+                    </a>
+                  </li>
+                </>
+              )}
+              <li>/</li>
+              <li className="text-white font-medium" aria-current="page">{tool.title}</li>
+            </ol>
+          </nav>
+
+          <header className="mb-8 border-b border-slate-800 pb-6">
             <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-2">
               <span className="uppercase tracking-wider">{category?.name || 'SEO Engine'}</span>
               <span>/</span>
@@ -97,6 +132,24 @@ export default async function ToolPage({ params }: Props) {
 
           {/* Isolated Client Component for Interactive Calculator & Controls */}
           <PublicToolDetailClient toolSlug={tool.slug} />
+
+          {/* Server-Rendered FAQ & Educational Guide Section */}
+          {tool.faqs && tool.faqs.length > 0 && (
+            <section aria-labelledby="faq-heading" className="mt-16 border-t border-slate-800 pt-10">
+              <h2 id="faq-heading" className="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
+              <div className="space-y-4">
+                {tool.faqs.map((faq, idx) => (
+                  <details key={idx} className="group rounded-2xl border border-slate-800 bg-slate-900/50 p-6 [&_summary::-webkit-details-marker]:hidden">
+                    <summary className="flex cursor-pointer items-center justify-between font-semibold text-white group-open:text-emerald-400">
+                      <span>{faq.question}</span>
+                      <span className="ml-4 transition group-open:rotate-180">↓</span>
+                    </summary>
+                    <p className="mt-4 text-slate-300 leading-relaxed">{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+          )}
         </article>
       </main>
     </>
