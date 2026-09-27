@@ -1,0 +1,6 @@
+{
+  "name": "Veritas SEO — Enterprise SEO Tools Platform & Headless CMS",
+  "description": "Production-grade SEO Tools Platform and Taxonomy CMS featuring multi-tier category architecture, schema-dts JSON-LD generation, exact decimal.js SERP metrics, and live on-page SEO health auditing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
