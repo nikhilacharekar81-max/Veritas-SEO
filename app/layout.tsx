@@ -1,5 +1,6 @@
 import React from 'react';
 import '../src/index.css';
+import { CmsProviderWrapper } from '../components/providers/CmsProviderWrapper';
 
 export const metadata = {
   title: 'Veritas SEO | Technical SEO Engine & Taxonomy Architecture',
@@ -17,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full">
       <body className="h-full bg-slate-950 text-slate-100 antialiased font-sans selection:bg-emerald-500 selection:text-white">
-        {children}
+        <CmsProviderWrapper>{children}</CmsProviderWrapper>
       </body>
     </html>
   );

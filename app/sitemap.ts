@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   };
 
   const categoryRoutes = DEMO_PRESET_CATEGORIES
-    .filter((cat) => cat.isPublished !== false)
+    .filter((cat) => cat.isActive && cat.seo?.robots?.index !== false)
     .map((cat) => ({
       url: `${baseUrl}/category/${cat.slug}`,
       lastModified: new Date(cat.updatedAt || Date.now()),
@@ -21,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
   const toolRoutes = DEMO_PRESET_TOOLS
-    .filter((tool) => tool.isPublished !== false && !tool.seo?.noIndex)
+    .filter((tool) => tool.isActive && tool.status === 'published' && tool.seo?.robots?.index !== false)
     .map((tool) => ({
       url: `${baseUrl}/tool/${tool.slug}`,
       lastModified: new Date(tool.updatedAt || Date.now()),

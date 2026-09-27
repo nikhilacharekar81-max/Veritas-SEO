@@ -1,7 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { notFound, redirect, RedirectType } from 'next/navigation';
-import { DEMO_PRESET_TOOLS, DEMO_PRESET_CATEGORIES, DEMO_PRESET_SUBCATEGORIES } from '../../../src/lib/demo-presets';
+import { notFound, permanentRedirect } from 'next/navigation';
+import { DEMO_PRESET_TOOLS, DEMO_PRESET_CATEGORIES, DEMO_PRESET_SUBCATEGORIES, DEMO_PRESET_REDIRECTS } from '../../../src/lib/demo-presets';
 import { generateToolWebApplicationSchema, generateFaqPageSchema, generateBreadcrumbSchema } from '../../../src/lib/schema-generator';
 import { PublicToolDetailClient } from './ToolClientComponent';
 
@@ -11,7 +11,12 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === slug || (t.redirectFrom && t.redirectFrom.includes(slug)));
+  
+  // Check if requested slug is an alias in DEMO_PRESET_REDIRECTS
+  const redirectRule = DEMO_PRESET_REDIRECTS.find((r) => r.fromPath === `/tool/${slug}`);
+  const targetSlug = redirectRule ? redirectRule.toPath.replace('/tool/', '') : slug;
+  
+  const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === targetSlug);
 
   if (!tool) {
     return {
@@ -30,8 +35,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: tool.seo?.metaTitle || `${tool.title} | Veritas SEO`,
     description: tool.seo?.metaDescription || tool.shortSummary,
     robots: {
-      index: tool.seo?.noIndex ? false : true,
-      follow: tool.seo?.noFollow ? false : true,
+      index: tool.seo?.robots ? tool.seo.robots.index : true,
+      follow: tool.seo?.robots ? tool.seo.robots.follow : true,
     },
     alternates: {
       canonical: canonicalUrl,
@@ -54,24 +59,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ToolPage({ params }: Props) {
   const { slug } = await params;
 
-  // Server-Side HTTP 301 Redirect Check for Slug Changes
-  const redirectTool = DEMO_PRESET_TOOLS.find((t) => t.redirectFrom && t.redirectFrom.includes(slug));
-  if (redirectTool && redirectTool.slug !== slug) {
-    redirect(`/tool/${redirectTool.slug}`, RedirectType.replace);
+  // Server-Side Permanent HTTP Redirect via RedirectRule Model
+  const redirectRule = DEMO_PRESET_REDIRECTS.find((r) => r.fromPath === `/tool/${slug}`);
+  if (redirectRule) {
+    permanentRedirect(redirectRule.toPath);
   }
 
   const tool = DEMO_PRESET_TOOLS.find((t) => t.slug === slug);
 
-  if (!tool || tool.isPublished === false) {
+  if (!tool || tool.status !== 'published' || !tool.isActive) {
     notFound();
   }
 
   const category = DEMO_PRESET_CATEGORIES.find((c) => c.id === tool.categoryId);
   const subCategory = DEMO_PRESET_SUBCATEGORIES.find((s) => s.id === tool.subCategoryId);
+  const canonicalUrl = tool.seo?.canonicalUrl || `https://veritas-seo.dev/tool/${tool.slug}`;
 
   // Generate Google-compliant Schema.org JSON-LD
   const webAppSchema = generateToolWebApplicationSchema(tool);
-  const faqSchema = generateFaqPageSchema(tool.faqs || []);
+  const faqSchema = generateFaqPageSchema(tool.faqs || [], canonicalUrl);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: 'https://veritas-seo.dev/' },
     ...(category ? [{ name: category.name, url: `https://veritas-seo.dev/category/${category.slug}` }] : []),

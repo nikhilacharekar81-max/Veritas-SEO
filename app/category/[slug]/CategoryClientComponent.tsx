@@ -12,7 +12,7 @@ export function CategoryClientComponent({ categorySlug }: { categorySlug: string
 
   return (
     <PublicCategoryHub
-      category={category}
+      categorySlug={categorySlug}
       onNavigateHome={() => {
         if (typeof window !== 'undefined') window.location.href = '/';
       }}

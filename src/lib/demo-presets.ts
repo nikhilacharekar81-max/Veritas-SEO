@@ -607,3 +607,17 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     updatedAt: new Date().toISOString(),
   },
 ];
+
+export const DEMO_PRESET_REDIRECTS: RedirectRule[] = [
+  {
+    id: 'redir_legacy_serp_title',
+    fromPath: '/tool/google-serp-title-checker',
+    toPath: '/tool/serp-pixel-simulator',
+    statusCode: 301,
+    reason: 'Legacy slug alias updated to canonical tool slug',
+    entityType: 'tool',
+    entityId: 'tool_serp_pixel',
+    hits: 42,
+    createdAt: new Date().toISOString(),
+  },
+];
