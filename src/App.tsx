@@ -115,7 +115,7 @@ const AppContent: React.FC = () => {
       />
 
       {/* Main Public Body */}
-      <div className="flex-1">
+      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
         {route.type === 'home' && (
           <HeroSection
             onSelectCategory={navigateCategory}
@@ -153,7 +153,7 @@ const AppContent: React.FC = () => {
             onNavigateTool={navigateTool}
           />
         )}
-      </div>
+      </main>
 
       {/* Footer */}
       <Footer
