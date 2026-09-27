@@ -106,98 +106,74 @@ interface CmsContextType {
 const CmsContext = createContext<CmsContextType | null>(null);
 
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // CRITICAL MANDATE: Start with ZERO categories, ZERO subcategories, ZERO tools
-  const [categories, setCategories] = useState<MainCategory[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
+  // CRITICAL MANDATE: Start with deterministic state on both SSR and Client initial render
+  const [categories, setCategories] = useState<MainCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [tools, setTools] = useState<SeoTool[]>([]);
+  const [redirects, setRedirects] = useState<RedirectRule[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
+  const [toolUsageEvents, setToolUsageEvents] = useState<ToolUsageEvent[]>([]);
+  const [robotsConfig, setRobotsConfig] = useState<RobotsTxtConfig>(DEFAULT_ROBOTS_CONFIG);
+  const [isHydrated, setIsHydrated] = useState(false);
 
-  const [subCategories, setSubCategories] = useState<SubCategory[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.SUBCATEGORIES);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [tools, setTools] = useState<SeoTool[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.TOOLS);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [redirects, setRedirects] = useState<RedirectRule[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.REDIRECTS);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [toolUsageEvents, setToolUsageEvents] = useState<ToolUsageEvent[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.TOOL_USAGE_EVENTS);
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
-  const [robotsConfig, setRobotsConfig] = useState<RobotsTxtConfig>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEYS.ROBOTS_CONFIG);
-      return saved ? JSON.parse(saved) : DEFAULT_ROBOTS_CONFIG;
-    } catch {
-      return DEFAULT_ROBOTS_CONFIG;
-    }
-  });
-
-  // Save to localStorage whenever state changes
+  // Load from localStorage AFTER initial client mount to guarantee 100% hydration matching
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
-  }, [categories]);
+    try {
+      const savedCat = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
+      if (savedCat) setCategories(JSON.parse(savedCat));
+
+      const savedSub = localStorage.getItem(STORAGE_KEYS.SUBCATEGORIES);
+      if (savedSub) setSubCategories(JSON.parse(savedSub));
+
+      const savedTools = localStorage.getItem(STORAGE_KEYS.TOOLS);
+      if (savedTools) setTools(JSON.parse(savedTools));
+
+      const savedRedir = localStorage.getItem(STORAGE_KEYS.REDIRECTS);
+      if (savedRedir) setRedirects(JSON.parse(savedRedir));
+
+      const savedLogs = localStorage.getItem(STORAGE_KEYS.AUDIT_LOGS);
+      if (savedLogs) setAuditLogs(JSON.parse(savedLogs));
+
+      const savedEvents = localStorage.getItem(STORAGE_KEYS.TOOL_USAGE_EVENTS);
+      if (savedEvents) setToolUsageEvents(JSON.parse(savedEvents));
+
+      const savedRobots = localStorage.getItem(STORAGE_KEYS.ROBOTS_CONFIG);
+      if (savedRobots) setRobotsConfig(JSON.parse(savedRobots));
+    } catch (e) {
+      console.error('Failed to parse CMS storage during hydration', e);
+    } finally {
+      setIsHydrated(true);
+    }
+  }, []);
+
+  // Save to localStorage ONLY after hydration completes
+  useEffect(() => {
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+  }, [categories, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(subCategories));
-  }, [subCategories]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(subCategories));
+  }, [subCategories, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(tools));
-  }, [tools]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(tools));
+  }, [tools, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.REDIRECTS, JSON.stringify(redirects));
-  }, [redirects]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.REDIRECTS, JSON.stringify(redirects));
+  }, [redirects, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(auditLogs));
-  }, [auditLogs]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(auditLogs));
+  }, [auditLogs, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TOOL_USAGE_EVENTS, JSON.stringify(toolUsageEvents));
-  }, [toolUsageEvents]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.TOOL_USAGE_EVENTS, JSON.stringify(toolUsageEvents));
+  }, [toolUsageEvents, isHydrated]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.ROBOTS_CONFIG, JSON.stringify(robotsConfig));
-  }, [robotsConfig]);
+    if (isHydrated) localStorage.setItem(STORAGE_KEYS.ROBOTS_CONFIG, JSON.stringify(robotsConfig));
+  }, [robotsConfig, isHydrated]);
 
   // Helper to log audit entries
   const addAuditLog = (

@@ -64,9 +64,16 @@ export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
 
       {/* Action Footer */}
       <div className="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-900 group-hover:text-emerald-700">
-        <span className="font-mono text-[11px] text-slate-400 group-hover:text-slate-600">
-          Engine: {tool.engineType.split('-')[0]}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[11px] text-slate-400 group-hover:text-slate-600">
+            Engine: {tool.engineType.split('-')[0]}
+          </span>
+          {tool.updatedAt && (
+            <time dateTime={tool.updatedAt} className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+              · {new Date(tool.updatedAt).toLocaleDateString()}
+            </time>
+          )}
+        </div>
         <span className="flex items-center gap-1">
           Open Engine <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
         </span>
