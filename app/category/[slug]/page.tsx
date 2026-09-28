@@ -1,8 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
 import { DEMO_PRESET_CATEGORIES } from '../../../src/lib/demo-presets';
-import { CategoryClientComponent } from './CategoryClientComponent';
+import App from '../../../src/App';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -14,8 +13,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!category) {
     return {
-      title: 'Category Not Found | Veritas SEO',
-      description: 'The requested category hub could not be found.',
+      title: `${slug.replace(/-/g, ' ')} Category Hub | Veritas SEO`,
+      description: 'Explore specialized technical SEO tools and diagnostic workflows.',
     };
   }
 
@@ -38,15 +37,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { slug } = await params;
-  const category = DEMO_PRESET_CATEGORIES.find((c) => c.slug === slug);
 
-  if (!category) {
-    notFound();
-  }
-
-  return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-slate-950 text-slate-100 focus:outline-none">
-      <CategoryClientComponent categorySlug={category.slug} />
-    </main>
-  );
+  return <App initialRoute={{ type: 'category', categorySlug: slug }} />;
 }

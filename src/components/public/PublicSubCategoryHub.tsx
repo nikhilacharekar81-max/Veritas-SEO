@@ -2,6 +2,7 @@ import React from 'react';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ToolCard } from './ToolCard';
+import { EditableText } from './EditableText';
 import { generateCollectionPageSchema } from '../../lib/schema-generator';
 import { Layers, Wrench } from 'lucide-react';
 
@@ -20,7 +21,7 @@ export const PublicSubCategoryHub: React.FC<Props> = ({
   onNavigateCategory,
   onNavigateTool,
 }) => {
-  const { publicCategories, publicSubCategories, publicTools } = useCms();
+  const { publicCategories, publicSubCategories, publicTools, updateSubCategory } = useCms();
 
   const category = publicCategories.find((c) => c.slug === categorySlug);
   const subCategory = publicSubCategories.find(
@@ -84,13 +85,24 @@ export const PublicSubCategoryHub: React.FC<Props> = ({
               {category.name} &gt; Sub-Category Hub
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {subCategory.name}
+              <EditableText
+                value={subCategory.name}
+                onSave={(val) => updateSubCategory(subCategory.id, { name: val })}
+                label="Sub-Category Hub Title"
+                allowHtml={false}
+              />
             </h1>
           </div>
         </div>
 
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          {subCategory.description}
+          <EditableText
+            value={subCategory.description}
+            onSave={(val) => updateSubCategory(subCategory.id, { description: val })}
+            label="Sub-Category Hub Description"
+            multiline
+            allowHtml={false}
+          />
         </p>
       </header>
 

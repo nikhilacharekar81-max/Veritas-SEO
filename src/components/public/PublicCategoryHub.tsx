@@ -2,6 +2,7 @@ import React from 'react';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ToolCard } from './ToolCard';
+import { EditableText } from './EditableText';
 import { IconRenderer } from '../ui/IconRenderer';
 import { generateCollectionPageSchema } from '../../lib/schema-generator';
 import { Layers, Wrench, ArrowRight } from 'lucide-react';
@@ -19,7 +20,7 @@ export const PublicCategoryHub: React.FC<Props> = ({
   onNavigateSubCategory,
   onNavigateTool,
 }) => {
-  const { publicCategories, publicSubCategories, publicTools } = useCms();
+  const { publicCategories, publicSubCategories, publicTools, updateCategory, updateSubCategory } = useCms();
 
   const category = publicCategories.find((c) => c.slug === categorySlug);
 
@@ -82,13 +83,24 @@ export const PublicCategoryHub: React.FC<Props> = ({
               Main Category Hub
             </span>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              {category.name}
+              <EditableText
+                value={category.name}
+                onSave={(newVal) => updateCategory(category.id, { name: newVal })}
+                label="Category Hub Title"
+                allowHtml={false}
+              />
             </h1>
           </div>
         </div>
 
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          {category.description}
+          <EditableText
+            value={category.description}
+            onSave={(newVal) => updateCategory(category.id, { description: newVal })}
+            label="Category Hub Description"
+            multiline
+            allowHtml={false}
+          />
         </p>
 
         <div className="pt-2 flex flex-wrap gap-4 text-xs text-slate-500 font-mono">
@@ -116,9 +128,22 @@ export const PublicCategoryHub: React.FC<Props> = ({
                 >
                   <div className="space-y-1.5">
                     <h3 className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-                      {sub.name}
+                      <EditableText
+                        value={sub.name}
+                        onSave={(val) => updateSubCategory(sub.id, { name: val })}
+                        label={`Sub-Category Name (${sub.slug})`}
+                        allowHtml={false}
+                      />
                     </h3>
-                    <p className="text-[11px] text-slate-500 line-clamp-2">{sub.description}</p>
+                    <p className="text-[11px] text-slate-500">
+                      <EditableText
+                        value={sub.description}
+                        onSave={(val) => updateSubCategory(sub.id, { description: val })}
+                        label={`Sub-Category Description (${sub.slug})`}
+                        multiline
+                        allowHtml={false}
+                      />
+                    </p>
                   </div>
                   <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-medium text-slate-600">
                     <span className="font-mono text-slate-400">{subTools.length} tools</span>

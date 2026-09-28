@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
-      <body className="h-full bg-slate-950 text-slate-100 antialiased font-sans selection:bg-emerald-500 selection:text-white">
+      <body className="min-h-screen bg-[#FAFAFA] text-slate-900 antialiased font-sans selection:bg-slate-900 selection:text-white">
         <CmsProviderWrapper>{children}</CmsProviderWrapper>
       </body>
     </html>

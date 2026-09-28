@@ -4,6 +4,8 @@ import { Breadcrumbs } from './Breadcrumbs';
 import { ToolEngineDispatcher } from '../tools/ToolEngineDispatcher';
 import { IconRenderer } from '../ui/IconRenderer';
 import { ToolCard } from './ToolCard';
+import { EditableText } from './EditableText';
+import { generateId } from '../../lib/utils';
 import {
   generateToolWebApplicationSchema,
   generateFaqPageSchema,
@@ -20,6 +22,7 @@ import {
   Layers,
   Wrench,
   Eye,
+  Plus,
 } from 'lucide-react';
 
 interface Props {
@@ -37,12 +40,37 @@ export const PublicToolDetail: React.FC<Props> = ({
   onNavigateSubCategory,
   onNavigateTool,
 }) => {
-  const { publicCategories, publicSubCategories, publicTools, trackToolUsage } = useCms();
+  const {
+    publicCategories,
+    publicSubCategories,
+    publicTools,
+    trackToolUsage,
+    updateTool,
+    isFrontendEditMode,
+  } = useCms();
   const [activeEduTab, setActiveEduTab] = useState<'how' | 'formula' | 'steps'>('how');
-  const [expandedFaqs, setExpandedFaqs] = useState<Record<string, boolean>>({ f1: true, faq_1: true });
+  const [expandedFaqs, setExpandedFaqs] = useState<Record<string, boolean>>({
+    f1: true,
+    faq_1: true,
+    faq_2: true,
+    faq_3: true,
+  });
   const [showMetaInspector, setShowMetaInspector] = useState(false);
 
   const tool = publicTools.find((t) => t.slug === toolSlug);
+
+  // Sync document <title> and <meta name="description"> with tool SEO metadata
+  React.useEffect(() => {
+    if (tool) {
+      const targetTitle = tool.seo?.metaTitle || tool.title;
+      const targetDesc = tool.seo?.metaDescription || tool.shortSummary;
+      document.title = targetTitle;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if (metaDesc) {
+        metaDesc.setAttribute('content', targetDesc);
+      }
+    }
+  }, [tool?.id, tool?.seo?.metaTitle, tool?.seo?.metaDescription, tool?.title, tool?.shortSummary]);
 
   // Track tool engagement event on mount
   React.useEffect(() => {
@@ -147,7 +175,12 @@ export const PublicToolDetail: React.FC<Props> = ({
                 <span className="text-[11px] font-mono text-slate-400">Engine: {tool.engineType}</span>
               </div>
               <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
-                {tool.title}
+                <EditableText
+                  value={tool.title}
+                  onSave={(newVal) => updateTool(tool.id, { title: newVal })}
+                  label="Tool H1 Headline"
+                  allowHtml={false}
+                />
               </h1>
             </div>
           </div>
@@ -162,7 +195,13 @@ export const PublicToolDetail: React.FC<Props> = ({
         </div>
 
         <p className="text-sm sm:text-base text-slate-600 max-w-3xl leading-relaxed">
-          {tool.shortSummary}
+          <EditableText
+            value={tool.shortSummary}
+            onSave={(newVal) => updateTool(tool.id, { shortSummary: newVal })}
+            label="Tool Subheadline Summary"
+            multiline
+            allowHtml={false}
+          />
         </p>
       </header>
 
@@ -221,18 +260,45 @@ export const PublicToolDetail: React.FC<Props> = ({
 
           <div className="text-sm text-slate-700 leading-relaxed">
             {activeEduTab === 'how' && (
-              <p className="whitespace-pre-line">
-                {tool.educationalContent.howItWorks ||
-                  'This diagnostic engine executes real-time mathematical validation against Google Chromium rendering benchmarks and Schema.org specifications.'}
-              </p>
+              <div className="whitespace-pre-line">
+                <EditableText
+                  value={
+                    tool.educationalContent.howItWorks ||
+                    'This diagnostic engine executes real-time mathematical validation against Google Chromium rendering benchmarks and Schema.org specifications.'
+                  }
+                  onSave={(newVal) =>
+                    updateTool(tool.id, {
+                      educationalContent: { ...tool.educationalContent, howItWorks: newVal },
+                    })
+                  }
+                  label="How It Works Content"
+                  multiline
+                  allowHtml={false}
+                />
+              </div>
             )}
 
             {activeEduTab === 'formula' && (
               <div className="space-y-3">
-                <p className="whitespace-pre-line">
-                  {tool.educationalContent.formulaMethodology ||
-                    'Calculations rely on Decimal.js arbitrary-precision floating point arithmetic to guarantee zero cumulative rounding errors.'}
-                </p>
+                <div className="whitespace-pre-line">
+                  <EditableText
+                    value={
+                      tool.educationalContent.formulaMethodology ||
+                      'Calculations rely on Decimal.js arbitrary-precision floating point arithmetic to guarantee zero cumulative rounding errors.'
+                    }
+                    onSave={(newVal) =>
+                      updateTool(tool.id, {
+                        educationalContent: {
+                          ...tool.educationalContent,
+                          formulaMethodology: newVal,
+                        },
+                      })
+                    }
+                    label="Formula Methodology"
+                    multiline
+                    allowHtml={false}
+                  />
+                </div>
               </div>
             )}
 
@@ -243,9 +309,44 @@ export const PublicToolDetail: React.FC<Props> = ({
                     <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0">
                       {idx + 1}
                     </div>
-                    <div className="space-y-1">
-                      <h3 className="font-bold text-slate-900 text-sm">{step.stepTitle}</h3>
-                      <p className="text-xs text-slate-600">{step.stepDescription}</p>
+                    <div className="space-y-1 flex-1">
+                      <h3 className="font-bold text-slate-900 text-sm">
+                        <EditableText
+                          value={step.stepTitle}
+                          onSave={(newVal) => {
+                            const updatedSteps = tool.educationalContent.stepByStepGuide.map((s, i) =>
+                              i === idx ? { ...s, stepTitle: newVal } : s
+                            );
+                            updateTool(tool.id, {
+                              educationalContent: {
+                                ...tool.educationalContent,
+                                stepByStepGuide: updatedSteps,
+                              },
+                            });
+                          }}
+                          label={`Step ${idx + 1} Title`}
+                          allowHtml={false}
+                        />
+                      </h3>
+                      <p className="text-xs text-slate-600">
+                        <EditableText
+                          value={step.stepDescription}
+                          onSave={(newVal) => {
+                            const updatedSteps = tool.educationalContent.stepByStepGuide.map((s, i) =>
+                              i === idx ? { ...s, stepDescription: newVal } : s
+                            );
+                            updateTool(tool.id, {
+                              educationalContent: {
+                                ...tool.educationalContent,
+                                stepByStepGuide: updatedSteps,
+                              },
+                            });
+                          }}
+                          label={`Step ${idx + 1} Description`}
+                          multiline
+                          allowHtml={false}
+                        />
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -258,16 +359,40 @@ export const PublicToolDetail: React.FC<Props> = ({
       {/* DYNAMIC FAQ ACCORDION SECTION (Google FAQPage Schema compliant) */}
       {tool.faqs && tool.faqs.length > 0 && (
         <section aria-labelledby="faqs-heading" className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs space-y-6">
-          <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-            <HelpCircle className="w-5 h-5 text-emerald-600" />
-            <div>
-              <h2 id="faqs-heading" className="text-lg font-bold text-slate-900">
-                Frequently Asked Questions
-              </h2>
-              <p className="text-xs text-slate-500">
-                Indexed directly into Google search snippets via Schema.org FAQPage markup.
-              </p>
+          <div className="flex items-center justify-between gap-4 border-b border-slate-100 pb-4">
+            <div className="flex items-center gap-2.5">
+              <HelpCircle className="w-5 h-5 text-emerald-600" />
+              <div>
+                <h2 id="faqs-heading" className="text-lg font-bold text-slate-900">
+                  Frequently Asked Questions (FAQ)
+                </h2>
+                <p className="text-xs text-slate-500">
+                  Indexed directly into Google search snippets via Schema.org FAQPage markup.
+                </p>
+              </div>
             </div>
+
+            {isFrontendEditMode && (
+              <button
+                type="button"
+                onClick={() => {
+                  const newId = generateId('faq');
+                  const nextFaqs = [
+                    ...tool.faqs,
+                    {
+                      id: newId,
+                      question: 'New Frequently Asked Question?',
+                      answer: 'Click here to edit the answer for this FAQ item.',
+                    },
+                  ];
+                  updateTool(tool.id, { faqs: nextFaqs });
+                  setExpandedFaqs((prev) => ({ ...prev, [newId]: true }));
+                }}
+                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center gap-1"
+              >
+                <Plus className="w-3.5 h-3.5" /> Add FAQ
+              </button>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -276,24 +401,44 @@ export const PublicToolDetail: React.FC<Props> = ({
 
               return (
                 <div key={faq.id || idx} className="rounded-2xl border border-slate-200 overflow-hidden">
-                  <button
-                    type="button"
+                  <div
                     onClick={() => toggleFaq(faq.id)}
-                    className="w-full p-4 text-left flex items-center justify-between gap-4 bg-slate-50/50 hover:bg-slate-50 transition-colors"
+                    className="w-full p-4 text-left flex items-center justify-between gap-4 bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer"
                   >
-                    <span className="font-semibold text-xs sm:text-sm text-slate-900">
-                      {faq.question}
+                    <span className="font-semibold text-xs sm:text-sm text-slate-900 flex-1">
+                      <EditableText
+                        value={faq.question}
+                        onSave={(newVal) => {
+                          const updatedFaqs = tool.faqs.map((f) =>
+                            f.id === faq.id ? { ...f, question: newVal } : f
+                          );
+                          updateTool(tool.id, { faqs: updatedFaqs });
+                        }}
+                        label={`FAQ #${idx + 1} Question`}
+                        allowHtml={false}
+                      />
                     </span>
                     <ChevronDown
                       className={`w-4 h-4 text-slate-400 transition-transform shrink-0 ${
                         isOpen ? 'rotate-180 text-slate-900' : ''
                       }`}
                     />
-                  </button>
+                  </div>
 
                   {isOpen && (
                     <div className="p-4 bg-white text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
-                      {faq.answer}
+                      <EditableText
+                        value={faq.answer}
+                        onSave={(newVal) => {
+                          const updatedFaqs = tool.faqs.map((f) =>
+                            f.id === faq.id ? { ...f, answer: newVal } : f
+                          );
+                          updateTool(tool.id, { faqs: updatedFaqs });
+                        }}
+                        label={`FAQ #${idx + 1} Answer`}
+                        multiline
+                        allowHtml={false}
+                      />
                     </div>
                   )}
                 </div>

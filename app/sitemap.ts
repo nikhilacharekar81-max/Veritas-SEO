@@ -1,5 +1,9 @@
 import type { MetadataRoute } from 'next';
-import { DEMO_PRESET_CATEGORIES, DEMO_PRESET_TOOLS } from '../src/lib/demo-presets';
+import {
+  DEMO_PRESET_CATEGORIES,
+  DEMO_PRESET_SUBCATEGORIES,
+  DEMO_PRESET_TOOLS,
+} from '../src/lib/demo-presets';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://veritas-seo.dev';
@@ -20,6 +24,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     }));
 
+  const subCategoryRoutes = DEMO_PRESET_SUBCATEGORIES
+    .filter((sub) => sub.isActive && sub.seo?.robots?.index !== false)
+    .map((sub) => ({
+      url: `${baseUrl}/subcategory/${sub.slug}`,
+      lastModified: new Date(sub.updatedAt || Date.now()),
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    }));
+
   const toolRoutes = DEMO_PRESET_TOOLS
     .filter((tool) => tool.isActive && tool.status === 'published' && tool.seo?.robots?.index !== false)
     .map((tool) => ({
@@ -29,5 +42,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.9,
     }));
 
-  return [homeRoute, ...categoryRoutes, ...toolRoutes];
+  return [homeRoute, ...categoryRoutes, ...subCategoryRoutes, ...toolRoutes];
 }

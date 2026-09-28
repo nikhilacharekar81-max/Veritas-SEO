@@ -13,35 +13,202 @@ import {
   Menu,
   X,
   Folder,
+  Edit3,
+  Check,
+  Globe,
+  Copy,
+  ArrowLeft,
+  ArrowRight,
+  Home,
+  FileText,
 } from 'lucide-react';
 
 interface Props {
+  currentPath?: string;
+  onNavigateByPath?: (path: string) => void;
   onOpenAdmin: () => void;
   onOpenSearch: () => void;
   onNavigateHome: () => void;
   onNavigateCategory: (slug: string) => void;
   onNavigateSubCategory: (catSlug: string, subSlug: string) => void;
   onNavigateTool: (slug: string) => void;
+  onNavigateBlog?: () => void;
   onOpenSitemapModal: () => void;
   onOpenRobotsModal: () => void;
 }
 
 export const Header: React.FC<Props> = ({
+  currentPath = '/',
+  onNavigateByPath,
   onOpenAdmin,
   onOpenSearch,
   onNavigateHome,
   onNavigateCategory,
   onNavigateSubCategory,
   onNavigateTool,
+  onNavigateBlog,
   onOpenSitemapModal,
   onOpenRobotsModal,
 }) => {
-  const { publicCategories, publicSubCategories, publicTools } = useCms();
+  const {
+    publicCategories,
+    publicSubCategories,
+    publicTools,
+    publicBlogPosts,
+    isFrontendEditMode,
+    setIsFrontendEditMode,
+  } = useCms();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdownCatId, setActiveDropdownCatId] = useState<string | null>(null);
+  const [copiedUrl, setCopiedUrl] = useState(false);
+
+  const fullCanonicalUrl = `https://veritas-seo.dev${currentPath === '/' ? '' : currentPath}`;
+
+  const handleCopyUrl = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(fullCanonicalUrl);
+      setCopiedUrl(true);
+      setTimeout(() => setCopiedUrl(false), 2000);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all">
+      {/* Live Webpage URL & Route Address Bar (Visible in Preview) */}
+      <div className="bg-slate-900 text-slate-200 px-4 py-1.5 border-b border-slate-800 text-xs">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') window.history.back();
+              }}
+              className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              title="Browser Back"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') window.history.forward();
+              }}
+              className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              title="Browser Forward"
+            >
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={onNavigateHome}
+              className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
+              title="Home (/)"
+            >
+              <Home className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          {/* Interactive Address Bar + Quick Route Directory Dropdown */}
+          <div className="flex-1 max-w-2xl flex items-center gap-2 bg-slate-950/90 border border-slate-700/80 rounded-xl px-3 py-1 font-mono text-[11px]">
+            <Globe className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="text-slate-400 hidden sm:inline shrink-0">https://veritas-seo.dev</span>
+            <select
+              value={currentPath}
+              onChange={(e) => {
+                const nextPath = e.target.value;
+                if (onNavigateByPath) {
+                  onNavigateByPath(nextPath);
+                }
+              }}
+              aria-label="Current Webpage URL Route"
+              className="flex-1 bg-transparent text-emerald-300 font-bold focus:outline-none cursor-pointer truncate"
+            >
+              <option value="/" className="bg-slate-900 text-white">
+                / (Homepage Hub)
+              </option>
+              <optgroup label="── Categories (/category/[slug]) ──" className="bg-slate-900 text-emerald-400">
+                {publicCategories.map((c) => (
+                  <option key={c.id} value={`/category/${c.slug}`} className="bg-slate-900 text-white">
+                    /category/{c.slug} — {c.name}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── Sub-Categories (/subcategory/[slug]) ──" className="bg-slate-900 text-emerald-400">
+                {publicSubCategories.map((s) => (
+                  <option key={s.id} value={`/subcategory/${s.slug}`} className="bg-slate-900 text-white">
+                    /subcategory/{s.slug} — {s.name}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── SEO Tools (/tool/[slug]) ──" className="bg-slate-900 text-emerald-400">
+                {publicTools.map((t) => (
+                  <option key={t.id} value={`/tool/${t.slug}`} className="bg-slate-900 text-white">
+                    /tool/{t.slug} — {t.title}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── Blog (/blog & /blog/[slug]) ──" className="bg-slate-900 text-emerald-400">
+                <option value="/blog" className="bg-slate-900 text-white">
+                  /blog — Veritas SEO Engineering Blog Hub
+                </option>
+                {publicBlogPosts.map((p) => (
+                  <option key={p.id} value={`/blog/${p.slug}`} className="bg-slate-900 text-white">
+                    /blog/{p.slug} — {p.title}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="── System ──" className="bg-slate-900 text-emerald-400">
+                <option value="/admin" className="bg-slate-900 text-white">
+                  /admin — Enterprise Taxonomy &amp; SEO CMS
+                </option>
+              </optgroup>
+            </select>
+
+            <button
+              type="button"
+              onClick={handleCopyUrl}
+              className="px-2 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[10px] font-sans font-semibold flex items-center gap-1 shrink-0 transition-colors"
+              title="Copy Webpage URL"
+            >
+              {copiedUrl ? (
+                <>
+                  <Check className="w-3 h-3 text-emerald-400" />
+                  <span className="text-emerald-400">Copied</span>
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3" />
+                  <span>Copy URL</span>
+                </>
+              )}
+            </button>
+          </div>
+
+          <span className="text-[11px] font-mono text-slate-400 hidden xl:inline">
+            Route: <strong className="text-emerald-400">{currentPath}</strong>
+          </span>
+        </div>
+      </div>
+
+      {isFrontendEditMode && (
+        <div className="bg-emerald-600 text-white px-4 py-1.5 text-xs font-medium flex items-center justify-between gap-4">
+          <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-3">
+            <span className="flex items-center gap-2">
+              <Edit3 className="w-3.5 h-3.5 shrink-0" />
+              <span>
+                <strong>Front-End Visual Editor Active:</strong> Click the <strong>Edit</strong> button next to any heading, description, blueprint section, or FAQ to modify it. Clicking titles or cards directly will navigate as normal.
+              </span>
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsFrontendEditMode(false)}
+              className="px-2.5 py-0.5 bg-white text-emerald-800 font-bold rounded-lg text-[11px] hover:bg-emerald-50 flex items-center gap-1 shrink-0"
+            >
+              <Check className="w-3 h-3" /> Done Editing
+            </button>
+          </div>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-6">
@@ -116,6 +283,21 @@ export const Header: React.FC<Props> = ({
                 </div>
               );
             })}
+
+            {onNavigateBlog && (
+              <button
+                type="button"
+                onClick={onNavigateBlog}
+                className={`px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors ${
+                  currentPath.startsWith('/blog')
+                    ? 'bg-slate-100 text-slate-900 font-bold'
+                    : 'hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Blog</span>
+              </button>
+            )}
           </nav>
         </div>
 
@@ -154,6 +336,23 @@ export const Header: React.FC<Props> = ({
           >
             <Bot className="w-3.5 h-3.5 text-slate-500" />
             <span>robots.txt</span>
+          </button>
+
+          {/* Front-End Live Edit Mode Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsFrontendEditMode(!isFrontendEditMode)}
+            className={`px-3 py-1.5 text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all border ${
+              isFrontendEditMode
+                ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border-emerald-200'
+            }`}
+            title="Toggle inline front-end text editing"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">
+              {isFrontendEditMode ? 'Editing Page' : 'Edit Page'}
+            </span>
           </button>
 
           {/* Admin CMS Button */}

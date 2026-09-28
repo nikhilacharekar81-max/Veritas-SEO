@@ -218,13 +218,43 @@ export const AuditLogEntrySchema = z.object({
     'imported',
     'reordered',
   ]),
-  entityType: z.enum(['category', 'subcategory', 'tool', 'redirect', 'system']),
+  entityType: z.enum(['category', 'subcategory', 'tool', 'redirect', 'blog', 'system']),
   entityId: z.string(),
   entityName: z.string(),
   details: z.string(),
 });
 
 export type AuditLogEntry = z.infer<typeof AuditLogEntrySchema>;
+
+/**
+ * WordPress-Style Blog Post Schema
+ */
+export const BlogPostStatusSchema = z.enum(['published', 'draft', 'trash']);
+export type BlogPostStatus = z.infer<typeof BlogPostStatusSchema>;
+
+export const BlogPostSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(2, 'Post title is required'),
+  slug: z
+    .string()
+    .min(2, 'Slug is required')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Slug must be lowercase kebab-case'),
+  excerpt: z.string(),
+  content: z.string(),
+  category: z.string().min(1).default('Technical SEO'),
+  tags: z.array(z.string()).default([]),
+  author: z.string().default('Editorial Team'),
+  featuredImage: z.string().default(''),
+  status: BlogPostStatusSchema.default('published'),
+  readingTimeMinutes: z.number().int().min(1).default(4),
+  seoTitle: z.string().default(''),
+  seoDescription: z.string().default(''),
+  focusKeyword: z.string().default(''),
+  publishedAt: z.string(),
+  updatedAt: z.string(),
+});
+
+export type BlogPost = z.infer<typeof BlogPostSchema>;
 
 /**
  * Tool Usage & Engagement Event Schema
@@ -257,6 +287,17 @@ export const RobotsTxtConfigSchema = z.object({
 export type RobotsTxtConfig = z.infer<typeof RobotsTxtConfigSchema>;
 
 /**
+ * Content Block Schema for editable text areas
+ */
+export const ContentBlockSchema = z.object({
+  id: z.string().min(1),
+  key: z.string().min(1),
+  content: z.string(),
+});
+
+export type ContentBlock = z.infer<typeof ContentBlockSchema>;
+
+/**
  * Complete CMS Registry Schema (Used for Zod-validated Export & Bulk Import)
  */
 export const CmsRegistrySchema = z.object({
@@ -269,6 +310,8 @@ export const CmsRegistrySchema = z.object({
   redirects: z.array(RedirectRuleSchema),
   auditLogs: z.array(AuditLogEntrySchema),
   robotsConfig: RobotsTxtConfigSchema,
+  contentBlocks: z.array(ContentBlockSchema).default([]),
+  blogPosts: z.array(BlogPostSchema).default([]),
 });
 
 export type CmsRegistry = z.infer<typeof CmsRegistrySchema>;

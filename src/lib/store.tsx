@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useContext, useEffect, useState, useMemo, useRef } from 'react';
 import type {
   MainCategory,
   SubCategory,
@@ -9,10 +9,17 @@ import type {
   CmsRegistry,
   ToolStatus,
   ToolUsageEvent,
+  ContentBlock,
+  BlogPost,
 } from './schemas';
 import { CmsRegistrySchema } from './schemas';
 import { generateId } from './utils';
-import { DEMO_PRESET_CATEGORIES, DEMO_PRESET_SUBCATEGORIES, DEMO_PRESET_TOOLS } from './demo-presets';
+import {
+  DEMO_PRESET_CATEGORIES,
+  DEMO_PRESET_SUBCATEGORIES,
+  DEMO_PRESET_TOOLS,
+  DEMO_PRESET_BLOG_POSTS,
+} from './demo-presets';
 
 const STORAGE_KEYS = {
   CATEGORIES: 'veritas_seo_categories',
@@ -22,8 +29,19 @@ const STORAGE_KEYS = {
   AUDIT_LOGS: 'veritas_seo_audit_logs',
   TOOL_USAGE_EVENTS: 'veritas_seo_tool_usage_events',
   ROBOTS_CONFIG: 'veritas_seo_robots_config',
+  CONTENT_BLOCKS: 'veritas_seo_content_blocks',
+  BLOG_POSTS: 'veritas_seo_blog_posts',
+  BLOG_CATEGORIES: 'veritas_seo_blog_categories',
   INITIALIZED: 'veritas_seo_initialized_flag',
 };
+
+const DEFAULT_BLOG_CATEGORIES = [
+  'Technical SEO',
+  'On-Page Optimization',
+  'Schema & Structured Data',
+  'Algorithm Updates',
+  'Case Studies',
+];
 
 const DEFAULT_ROBOTS_CONFIG: RobotsTxtConfig = {
   userAgent: '*',
@@ -34,6 +52,164 @@ const DEFAULT_ROBOTS_CONFIG: RobotsTxtConfig = {
   customRules: '# Veritas SEO Crawl Engine Rules\n# Optimized for Googlebot & Bingbot',
 };
 
+export const DEFAULT_CONTENT_BLOCKS: ContentBlock[] = [
+  {
+    id: 'blk_hero_badge',
+    key: 'hero.badge',
+    content: 'Enterprise Technical SEO & Precision Calculators',
+  },
+  {
+    id: 'blk_hero_headline',
+    key: 'hero.headline',
+    content: 'Precision SEO Engineering & <span class="font-serif italic font-normal text-slate-700">Taxonomy Suite</span>',
+  },
+  {
+    id: 'blk_hero_subheadline',
+    key: 'hero.subheadline',
+    content:
+      'Simulate Google SERP pixel truncation, calculate n-gram keyword density using exact Decimal.js math, generate Schema.org JSON-LD, and manage hierarchical SEO tool taxonomies.',
+  },
+  {
+    id: 'blk_hero_cat_heading',
+    key: 'hero.categories_heading',
+    content: 'Explore by Category Hub',
+  },
+  {
+    id: 'blk_hero_cat_subheading',
+    key: 'hero.categories_subheading',
+    content: 'Deep dive into specialized sub-category workflows and diagnostic engines.',
+  },
+  {
+    id: 'blk_analyzer_comp_title',
+    key: 'analyzer.comparison_title',
+    content: 'Keyword Contextual Analysis vs. N-Gram Keyword Frequency Matrix',
+  },
+  {
+    id: 'blk_analyzer_ctx_title',
+    key: 'analyzer.contextual_title',
+    content: 'Contextual Analysis',
+  },
+  {
+    id: 'blk_analyzer_ctx_desc',
+    key: 'analyzer.contextual_desc',
+    content:
+      'Use this to ensure your primary keyword is distributed evenly throughout the document (check the 10-segment position map) and maintains a natural density profile.',
+  },
+  {
+    id: 'blk_analyzer_mtx_title',
+    key: 'analyzer.matrix_title',
+    content: 'Frequency Matrix',
+  },
+  {
+    id: 'blk_analyzer_mtx_desc',
+    key: 'analyzer.matrix_desc',
+    content:
+      'Use this to identify technical red flags across unigrams, bigrams, trigrams, and quadgrams. Check for "Dense" status indicators and high frequency counts that may signal keyword stuffing.',
+  },
+  {
+    id: 'blk_analyzer_s1_title',
+    key: 'analyzer.section1_title',
+    content: 'Why Modern SEO Requires N-Gram Analysis Over Simple Keyword Density',
+  },
+  {
+    id: 'blk_analyzer_s1_intro',
+    key: 'analyzer.section1_intro',
+    content:
+      'Simple word counters only tell half the story. If you write an article about digital marketing strategies, a basic tool counts "digital," "marketing," and "strategies" as completely separate words.',
+  },
+  {
+    id: 'blk_analyzer_s1_ngram1',
+    key: 'analyzer.section1_ngram1',
+    content: 'Single words (e.g., "SEO", "content", "traffic").',
+  },
+  {
+    id: 'blk_analyzer_s1_ngram2',
+    key: 'analyzer.section1_ngram2',
+    content: 'Two-word phrases (e.g., "keyword density", "search engine").',
+  },
+  {
+    id: 'blk_analyzer_s1_ngram3',
+    key: 'analyzer.section1_ngram3',
+    content: 'Three-word long-tail phrases (e.g., "real-time content analysis").',
+  },
+  {
+    id: 'blk_analyzer_s1_ngram4',
+    key: 'analyzer.section1_ngram4',
+    content: 'Four-word structural phrases (e.g., "free online keyword density").',
+  },
+  {
+    id: 'blk_analyzer_s1_outro',
+    key: 'analyzer.section1_outro',
+    content:
+      'By analyzing multi-word combinations, you can instantly identify unintended word repetition, uncover natural long-tail phrases, and align your writing with how modern search engines understand context.',
+  },
+  {
+    id: 'blk_analyzer_s2_title',
+    key: 'analyzer.section2_title',
+    content: 'Key Features of Our Free Keyword & Text Analyzer',
+  },
+  {
+    id: 'blk_analyzer_f1_title',
+    key: 'analyzer.feature1_title',
+    content: 'Live Visual Distribution Map',
+  },
+  {
+    id: 'blk_analyzer_f1_desc',
+    key: 'analyzer.feature1_desc',
+    content:
+      'Most tools only give you a raw count. Our tool splits your text into 10 document segments to show you where your keywords appear, helping you fix uneven keyword clustering across paragraphs.',
+  },
+  {
+    id: 'blk_analyzer_f2_title',
+    key: 'analyzer.feature2_title',
+    content: 'Prominence & Metric Ranking',
+  },
+  {
+    id: 'blk_analyzer_f2_desc',
+    key: 'analyzer.feature2_desc',
+    content:
+      'Instead of sorting words strictly by count, our tool calculates a Prominence Score (Frequency × Phrase Length). This highlights meaningful, semantically rich phrases instead of generic filler words.',
+  },
+  {
+    id: 'blk_analyzer_f3_title',
+    key: 'analyzer.feature3_title',
+    content: 'Color-Coded Target Diagnostics',
+  },
+  {
+    id: 'blk_analyzer_f4_title',
+    key: 'analyzer.feature4_title',
+    content: 'Advanced Lexical Metrics',
+  },
+  {
+    id: 'blk_analyzer_f4_desc',
+    key: 'analyzer.feature4_desc',
+    content:
+      'Track Lexical Diversity (the ratio of unique words to total words), Reading Time, and overall vocabulary complexity to ensure high readability.',
+  },
+  {
+    id: 'blk_analyzer_f5_title',
+    key: 'analyzer.feature5_title',
+    content: '100% Client-Side Privacy',
+  },
+  {
+    id: 'blk_analyzer_f5_desc',
+    key: 'analyzer.feature5_desc',
+    content:
+      'Your text is processed directly inside your web browser. Nothing is ever uploaded to a remote server, keeping your confidential drafts and articles 100% private.',
+  },
+  {
+    id: 'blk_footer_tagline',
+    key: 'footer.tagline',
+    content:
+      'Enterprise SEO tools platform & taxonomy CMS engineered with semantic HTML5, Decimal.js exact precision math, and automated schema-dts structured data.',
+  },
+  {
+    id: 'blk_footer_copyright',
+    key: 'footer.copyright',
+    content: '© 2026 Veritas SEO Platform. All rights reserved.',
+  },
+];
+
 interface CmsContextType {
   categories: MainCategory[];
   subCategories: SubCategory[];
@@ -42,6 +218,12 @@ interface CmsContextType {
   auditLogs: AuditLogEntry[];
   toolUsageEvents: ToolUsageEvent[];
   robotsConfig: RobotsTxtConfig;
+  contentBlocks: ContentBlock[];
+  blogPosts: BlogPost[];
+  publicBlogPosts: BlogPost[];
+  blogCategories: string[];
+  isFrontendEditMode: boolean;
+  setIsFrontendEditMode: (enabled: boolean) => void;
 
   // Active public views (filtered by cascading active rules)
   publicCategories: MainCategory[];
@@ -95,6 +277,18 @@ interface CmsContextType {
 
   // Robots.txt action
   updateRobotsConfig: (config: RobotsTxtConfig) => void;
+  // Content Actions
+  setContentBlock: (key: string, content: string) => void;
+  getContentBlock: (key: string) => string;
+  deleteContentBlock: (key: string) => void;
+  resetContentBlocks: () => void;
+
+  // Blog CMS Actions (WordPress Style)
+  createBlogPost: (post: Omit<BlogPost, 'id' | 'publishedAt' | 'updatedAt'>) => BlogPost;
+  updateBlogPost: (id: string, post: Partial<BlogPost>) => void;
+  deleteBlogPost: (id: string, permanent?: boolean) => void;
+  addBlogCategory: (name: string) => void;
+  deleteBlogCategory: (name: string) => void;
 
   // Backup, Import & Presets
   exportRegistryJson: () => string;
@@ -107,26 +301,81 @@ const CmsContext = createContext<CmsContextType | null>(null);
 
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // CRITICAL MANDATE: Start with deterministic state on both SSR and Client initial render
-  const [categories, setCategories] = useState<MainCategory[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-  const [tools, setTools] = useState<SeoTool[]>([]);
+  const [categories, setCategories] = useState<MainCategory[]>(DEMO_PRESET_CATEGORIES);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>(DEMO_PRESET_SUBCATEGORIES);
+  const [tools, setTools] = useState<SeoTool[]>(DEMO_PRESET_TOOLS);
   const [redirects, setRedirects] = useState<RedirectRule[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>([]);
   const [toolUsageEvents, setToolUsageEvents] = useState<ToolUsageEvent[]>([]);
   const [robotsConfig, setRobotsConfig] = useState<RobotsTxtConfig>(DEFAULT_ROBOTS_CONFIG);
+  const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>(DEFAULT_CONTENT_BLOCKS);
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>(DEMO_PRESET_BLOG_POSTS);
+  const [blogCategories, setBlogCategories] = useState<string[]>(DEFAULT_BLOG_CATEGORIES);
+  const [isFrontendEditMode, setIsFrontendEditMode] = useState<boolean>(true);
   const [isHydrated, setIsHydrated] = useState(false);
+  const isInitialMount = useRef(true);
 
   // Load from localStorage AFTER initial client mount to guarantee 100% hydration matching
   useEffect(() => {
     try {
       const savedCat = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
-      if (savedCat) setCategories(JSON.parse(savedCat));
+      if (savedCat) {
+        const parsedCat: MainCategory[] = JSON.parse(savedCat);
+        if (Array.isArray(parsedCat) && parsedCat.length > 0) {
+          const existingCatIds = new Set(parsedCat.map((c) => c.id));
+          const missingCats = DEMO_PRESET_CATEGORIES.filter((c) => !existingCatIds.has(c.id));
+          setCategories([...parsedCat, ...missingCats]);
+        }
+      }
 
       const savedSub = localStorage.getItem(STORAGE_KEYS.SUBCATEGORIES);
-      if (savedSub) setSubCategories(JSON.parse(savedSub));
+      if (savedSub) {
+        const parsedSub: SubCategory[] = JSON.parse(savedSub);
+        if (Array.isArray(parsedSub) && parsedSub.length > 0) {
+          const existingSubIds = new Set(parsedSub.map((s) => s.id));
+          const missingSubs = DEMO_PRESET_SUBCATEGORIES.filter((s) => !existingSubIds.has(s.id));
+          setSubCategories([...parsedSub, ...missingSubs]);
+        }
+      }
 
       const savedTools = localStorage.getItem(STORAGE_KEYS.TOOLS);
-      if (savedTools) setTools(JSON.parse(savedTools));
+      const blueprintMigrated = localStorage.getItem('veritas_seo_kw_blueprint_v2');
+      if (savedTools) {
+        const parsedTools: SeoTool[] = JSON.parse(savedTools);
+        if (Array.isArray(parsedTools) && parsedTools.length > 0) {
+          const existingToolIds = new Set(parsedTools.map((t) => t.id));
+          const existingToolSlugs = new Set(parsedTools.map((t) => t.slug));
+          const missingPresetTools = DEMO_PRESET_TOOLS.filter(
+            (pt) => !existingToolIds.has(pt.id) && !existingToolSlugs.has(pt.slug)
+          );
+
+          const keywordPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_keyword_density');
+          const mergedTools = [...parsedTools, ...missingPresetTools].map((t) => {
+            const fixedSubCat =
+              t.subCategoryId === 'subcat_serp_simulators' ? 'subcat_serp_preview' : t.subCategoryId;
+            if (!blueprintMigrated && t.id === 'tool_keyword_density' && keywordPreset) {
+              return {
+                ...t,
+                subCategoryId: fixedSubCat,
+                title: keywordPreset.title,
+                shortSummary: keywordPreset.shortSummary,
+                educationalContent: keywordPreset.educationalContent,
+                faqs: keywordPreset.faqs,
+                seo: keywordPreset.seo,
+              };
+            }
+            return {
+              ...t,
+              subCategoryId: fixedSubCat,
+            };
+          });
+
+          setTools(mergedTools);
+          localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
+        }
+      } else {
+        localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
+      }
 
       const savedRedir = localStorage.getItem(STORAGE_KEYS.REDIRECTS);
       if (savedRedir) setRedirects(JSON.parse(savedRedir));
@@ -139,41 +388,214 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const savedRobots = localStorage.getItem(STORAGE_KEYS.ROBOTS_CONFIG);
       if (savedRobots) setRobotsConfig(JSON.parse(savedRobots));
+      
+      const savedBlocks = localStorage.getItem(STORAGE_KEYS.CONTENT_BLOCKS);
+      if (savedBlocks) {
+        const parsedBlocks: ContentBlock[] = JSON.parse(savedBlocks);
+        if (Array.isArray(parsedBlocks)) {
+          const blockMap = new Map(parsedBlocks.map((b) => [b.key, b]));
+          const merged: ContentBlock[] = DEFAULT_CONTENT_BLOCKS.map((def) =>
+            blockMap.has(def.key) ? blockMap.get(def.key)! : def
+          );
+          parsedBlocks.forEach((b) => {
+            if (!DEFAULT_CONTENT_BLOCKS.some((def) => def.key === b.key)) {
+              merged.push(b);
+            }
+          });
+          setContentBlocks(merged);
+        }
+      }
+
+      const savedBlog = localStorage.getItem(STORAGE_KEYS.BLOG_POSTS);
+      if (savedBlog) {
+        const parsedBlog: BlogPost[] = JSON.parse(savedBlog);
+        if (Array.isArray(parsedBlog) && parsedBlog.length > 0) {
+          const existingIds = new Set(parsedBlog.map((p) => p.id));
+          const missingPresets = DEMO_PRESET_BLOG_POSTS.filter((p) => !existingIds.has(p.id));
+          setBlogPosts([...parsedBlog, ...missingPresets]);
+        }
+      }
+
+      const savedBlogCats = localStorage.getItem(STORAGE_KEYS.BLOG_CATEGORIES);
+      if (savedBlogCats) {
+        const parsedBlogCats: string[] = JSON.parse(savedBlogCats);
+        if (Array.isArray(parsedBlogCats) && parsedBlogCats.length > 0) {
+          setBlogCategories(parsedBlogCats);
+        }
+      }
     } catch (e) {
       console.error('Failed to parse CMS storage during hydration', e);
     } finally {
       setIsHydrated(true);
+      setTimeout(() => {
+        isInitialMount.current = false;
+      }, 200);
     }
   }, []);
 
-  // Save to localStorage ONLY after hydration completes
+  // Save to localStorage ONLY on state mutation after initial load
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(categories));
+    }
   }, [categories, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(subCategories));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(subCategories));
+    }
   }, [subCategories, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(tools));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(tools));
+    }
   }, [tools, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.REDIRECTS, JSON.stringify(redirects));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.REDIRECTS, JSON.stringify(redirects));
+    }
   }, [redirects, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(auditLogs));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.AUDIT_LOGS, JSON.stringify(auditLogs));
+    }
   }, [auditLogs, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.TOOL_USAGE_EVENTS, JSON.stringify(toolUsageEvents));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.TOOL_USAGE_EVENTS, JSON.stringify(toolUsageEvents));
+    }
   }, [toolUsageEvents, isHydrated]);
 
   useEffect(() => {
-    if (isHydrated) localStorage.setItem(STORAGE_KEYS.ROBOTS_CONFIG, JSON.stringify(robotsConfig));
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.ROBOTS_CONFIG, JSON.stringify(robotsConfig));
+    }
   }, [robotsConfig, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.CONTENT_BLOCKS, JSON.stringify(contentBlocks));
+    }
+  }, [contentBlocks, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.BLOG_POSTS, JSON.stringify(blogPosts));
+    }
+  }, [blogPosts, isHydrated]);
+
+  useEffect(() => {
+    if (isHydrated && !isInitialMount.current) {
+      localStorage.setItem(STORAGE_KEYS.BLOG_CATEGORIES, JSON.stringify(blogCategories));
+    }
+  }, [blogCategories, isHydrated]);
+
+  const publicBlogPosts = useMemo(() => {
+    return blogPosts
+      .filter((p) => p.status === 'published')
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  }, [blogPosts]);
+
+  const createBlogPost = (postData: Omit<BlogPost, 'id' | 'publishedAt' | 'updatedAt'>): BlogPost => {
+    const now = new Date().toISOString();
+    const newPost: BlogPost = {
+      ...postData,
+      id: generateId('post'),
+      publishedAt: now,
+      updatedAt: now,
+    };
+    setBlogPosts((prev) => [newPost, ...prev]);
+    addAuditLog('created', 'blog', newPost.id, newPost.title, `Created blog post "/blog/${newPost.slug}" (${newPost.status})`);
+    return newPost;
+  };
+
+  const updateBlogPost = (id: string, updates: Partial<BlogPost>) => {
+    setBlogPosts((prev) =>
+      prev.map((post) => {
+        if (post.id !== id) return post;
+        // Auto-create 301 redirect if slug changed on a published post
+        if (updates.slug && updates.slug !== post.slug) {
+          const oldPath = `/blog/${post.slug}`;
+          const newPath = `/blog/${updates.slug}`;
+          setRedirects((rPrev) => [
+            {
+              id: generateId('redir'),
+              fromPath: oldPath,
+              toPath: newPath,
+              statusCode: 301,
+              reason: `Blog post slug changed from ${oldPath} to ${newPath}`,
+              entityType: 'manual',
+              entityId: post.id,
+              hits: 0,
+              createdAt: new Date().toISOString(),
+            },
+            ...rPrev.filter((r) => r.fromPath !== oldPath),
+          ]);
+        }
+        return {
+          ...post,
+          ...updates,
+          updatedAt: new Date().toISOString(),
+        };
+      })
+    );
+    addAuditLog('edited', 'blog', id, updates.title || id, 'Updated blog post');
+  };
+
+  const deleteBlogPost = (id: string, permanent = false) => {
+    const target = blogPosts.find((p) => p.id === id);
+    if (!target) return;
+    if (permanent || target.status === 'trash') {
+      setBlogPosts((prev) => prev.filter((p) => p.id !== id));
+      addAuditLog('deleted', 'blog', id, target.title, 'Permanently deleted blog post');
+    } else {
+      setBlogPosts((prev) =>
+        prev.map((p) => (p.id === id ? { ...p, status: 'trash', updatedAt: new Date().toISOString() } : p))
+      );
+      addAuditLog('toggled_status', 'blog', id, target.title, 'Moved blog post to Trash');
+    }
+  };
+
+  const addBlogCategory = (name: string) => {
+    const trimmed = name.trim();
+    if (!trimmed || blogCategories.includes(trimmed)) return;
+    setBlogCategories((prev) => [...prev, trimmed]);
+  };
+
+  const deleteBlogCategory = (name: string) => {
+    setBlogCategories((prev) => prev.filter((c) => c !== name));
+  };
+
+  const setContentBlock = (key: string, content: string) => {
+    setContentBlocks((prev) => {
+      const index = prev.findIndex((b) => b.key === key);
+      if (index >= 0) {
+        const updated = [...prev];
+        updated[index] = { ...updated[index], content };
+        return updated;
+      }
+      return [...prev, { id: generateId('block'), key, content }];
+    });
+    addAuditLog('edited', 'system', key, `Content Block: ${key}`, `Updated content block "${key}"`);
+  };
+
+  const getContentBlock = (key: string) => {
+    return contentBlocks.find((b) => b.key === key)?.content || '';
+  };
+
+  const deleteContentBlock = (key: string) => {
+    setContentBlocks((prev) => prev.filter((b) => b.key !== key));
+    addAuditLog('deleted', 'system', key, `Content Block: ${key}`, `Deleted content block "${key}"`);
+  };
+
+  const resetContentBlocks = () => {
+    setContentBlocks(DEFAULT_CONTENT_BLOCKS);
+    addAuditLog('imported', 'system', 'content_reset', 'Content Blocks', 'Reset all content blocks to default values');
+  };
 
   // Helper to log audit entries
   const addAuditLog = (
@@ -225,16 +647,26 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       .sort((a, b) => a.displayOrder - b.displayOrder);
   }, [subCategories, activeCategoryIds]);
 
+  const allSubCategoryIds = useMemo(() => {
+    return new Set(subCategories.map((sc) => sc.id));
+  }, [subCategories]);
+
   const publicTools = useMemo(() => {
     return tools
       .filter((t) => {
         if (!t.isActive || t.status !== 'published') return false;
         if (t.categoryId && !activeCategoryIds.has(t.categoryId)) return false;
-        if (t.subCategoryId && !activeSubCategoryIds.has(t.subCategoryId)) return false;
+        if (
+          t.subCategoryId &&
+          allSubCategoryIds.has(t.subCategoryId) &&
+          !activeSubCategoryIds.has(t.subCategoryId)
+        ) {
+          return false;
+        }
         return true;
       })
       .sort((a, b) => a.displayOrder - b.displayOrder);
-  }, [tools, activeCategoryIds, activeSubCategoryIds]);
+  }, [tools, activeCategoryIds, allSubCategoryIds, activeSubCategoryIds]);
 
   // ---------------------------------------------------------------------------
   // MAIN CATEGORY HANDLERS
@@ -807,6 +1239,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       redirects,
       auditLogs,
       robotsConfig,
+      contentBlocks,
+      blogPosts,
     };
     return JSON.stringify(registry, null, 2);
   };
@@ -942,6 +1376,21 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteRedirect,
         checkRedirect,
         updateRobotsConfig,
+        contentBlocks,
+        blogPosts,
+        publicBlogPosts,
+        blogCategories,
+        isFrontendEditMode,
+        setIsFrontendEditMode,
+        setContentBlock,
+        getContentBlock,
+        deleteContentBlock,
+        resetContentBlocks,
+        createBlogPost,
+        updateBlogPost,
+        deleteBlogPost,
+        addBlogCategory,
+        deleteBlogCategory,
         exportRegistryJson,
         importRegistryJson,
         seedDemoPresets,

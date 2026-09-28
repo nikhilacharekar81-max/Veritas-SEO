@@ -137,14 +137,28 @@ export const STOP_WORDS = new Set([
   'you\'ll', 'you\'re', 'you\'ve', 'your', 'yours', 'yourself', 'yourselves'
 ]);
 
+// Add to seo-math.ts
+
+export function calculateUniformity(positions: number[], textLength: number): number {
+  if (positions.length <= 1) return 1;
+  // Measures spread across the document length (0 to 1)
+  const normalizedPositions = positions.map(p => p / textLength);
+  const mean = normalizedPositions.reduce((a, b) => a + b, 0) / normalizedPositions.length;
+  const variance = normalizedPositions.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / normalizedPositions.length;
+  // Uniformity = 1 - standard deviation
+  return Math.max(0, Math.min(1, 1 - Math.sqrt(variance) * 2));
+}
+
 export interface KeywordDensityItem {
   phrase: string;
   count: number;
-  density: number; // percentage (e.g. 2.35)
-  ngram: number; // 1, 2, or 3
+  density: number; 
+  ngram: number; 
   isOverOptimized: boolean;
   isTarget?: boolean;
+  prominence: number; // New: count * phrase length
 }
+
 
 /**
  * Calculates keyword density using exact Decimal.js math
@@ -159,10 +173,11 @@ export function calculateKeywordDensity(
   uniqueWords: number;
   charCount: number;
   readingTimeMinutes: number;
-  targetMetrics?: KeywordDensityItem;
+  targetMetrics?: KeywordDensityItem & { positions: number[] };
   top1Grams: KeywordDensityItem[];
   top2Grams: KeywordDensityItem[];
   top3Grams: KeywordDensityItem[];
+  top4Grams: KeywordDensityItem[];
 } {
   const cleanText = text.trim();
   if (!cleanText) {
@@ -174,6 +189,7 @@ export function calculateKeywordDensity(
       top1Grams: [],
       top2Grams: [],
       top3Grams: [],
+      top4Grams: [],
     };
   }
 
@@ -186,14 +202,13 @@ export function calculateKeywordDensity(
   const totalWords = rawWords.length;
   const totalWordsDec = new Decimal(Math.max(1, totalWords));
 
-  // Count 1-grams
+  // ... (Count grams logic remains same)
+  // [KEEP EXISTING GRAM COUNTING LOGIC]
   const oneGramCounts = new Map<string, number>();
   for (const word of rawWords) {
     if (!includeStopWords && STOP_WORDS.has(word)) continue;
     oneGramCounts.set(word, (oneGramCounts.get(word) || 0) + 1);
   }
-
-  // Count 2-grams
   const twoGramCounts = new Map<string, number>();
   for (let i = 0; i < rawWords.length - 1; i++) {
     const w1 = rawWords[i];
@@ -202,8 +217,6 @@ export function calculateKeywordDensity(
     const phrase = `${w1} ${w2}`;
     twoGramCounts.set(phrase, (twoGramCounts.get(phrase) || 0) + 1);
   }
-
-  // Count 3-grams
   const threeGramCounts = new Map<string, number>();
   for (let i = 0; i < rawWords.length - 2; i++) {
     const w1 = rawWords[i];
@@ -213,37 +226,50 @@ export function calculateKeywordDensity(
     const phrase = `${w1} ${w2} ${w3}`;
     threeGramCounts.set(phrase, (threeGramCounts.get(phrase) || 0) + 1);
   }
-
+  const fourGramCounts = new Map<string, number>();
+  for (let i = 0; i < rawWords.length - 3; i++) {
+    const w1 = rawWords[i];
+    const w2 = rawWords[i + 1];
+    const w3 = rawWords[i + 2];
+    const w4 = rawWords[i + 3];
+    if (!includeStopWords && STOP_WORDS.has(w1) && STOP_WORDS.has(w2) && STOP_WORDS.has(w3) && STOP_WORDS.has(w4)) continue;
+    const phrase = `${w1} ${w2} ${w3} ${w4}`;
+    fourGramCounts.set(phrase, (fourGramCounts.get(phrase) || 0) + 1);
+  }
   const formatDensity = (countsMap: Map<string, number>, ngram: number): KeywordDensityItem[] => {
     const list: KeywordDensityItem[] = [];
     countsMap.forEach((count, phrase) => {
       if (count >= minOccurrence) {
-        // Exact density formula: (count * ngram / totalWords) * 100
         const densityDec = new Decimal(count)
           .times(ngram)
           .dividedBy(totalWordsDec)
           .times(100);
         const density = Number(densityDec.toFixed(2));
         const isOverOptimized = density > (ngram === 1 ? 3.5 : ngram === 2 ? 2.5 : 1.8);
-        list.push({ phrase, count, density, ngram, isOverOptimized });
+        const prominence = count * phrase.length;
+        list.push({ phrase, count, density, ngram, isOverOptimized, prominence });
       }
     });
-    return list.sort((a, b) => b.count - a.count).slice(0, 15);
+    return list.sort((a, b) => b.prominence - a.prominence).slice(0, 15);
   };
-
   const top1Grams = formatDensity(oneGramCounts, 1);
   const top2Grams = formatDensity(twoGramCounts, 2);
   const top3Grams = formatDensity(threeGramCounts, 3);
+  // ... (Keep grams logic)
 
-  let targetMetrics: KeywordDensityItem | undefined;
+  let targetMetrics: (KeywordDensityItem & { positions: number[] }) | undefined;
   if (targetKeyword.trim()) {
     const normTarget = targetKeyword.toLowerCase().trim();
     const targetWords = normTarget.split(/\s+/).length;
     let targetCount = 0;
+    const positions: number[] = [];
 
     const regex = new RegExp(`\\b${normTarget.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'gi');
-    const matches = cleanText.match(regex);
-    targetCount = matches ? matches.length : 0;
+    let match;
+    while ((match = regex.exec(cleanText)) !== null) {
+        targetCount++;
+        positions.push(match.index);
+    }
 
     const densityDec = new Decimal(targetCount)
       .times(targetWords)
@@ -258,6 +284,8 @@ export function calculateKeywordDensity(
       ngram: targetWords,
       isOverOptimized: density > (targetWords === 1 ? 3.0 : 2.2),
       isTarget: true,
+      positions,
+      prominence: targetCount * targetKeyword.length
     };
   }
 
@@ -272,6 +300,7 @@ export function calculateKeywordDensity(
     top1Grams,
     top2Grams,
     top3Grams,
+    top4Grams: formatDensity(fourGramCounts, 4),
   };
 }
 

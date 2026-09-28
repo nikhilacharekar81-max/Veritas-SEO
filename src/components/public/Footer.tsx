@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCms } from '../../lib/store';
-import { ShieldCheck, FileCode, Bot, Sparkles, Layers } from 'lucide-react';
+import { EditableText } from './EditableText';
+import { ShieldCheck, FileCode, Bot, Sparkles } from 'lucide-react';
 
 interface Props {
   onNavigateHome: () => void;
@@ -40,7 +41,12 @@ export const Footer: React.FC<Props> = ({
               </span>
             </button>
             <p className="text-slate-500 leading-relaxed text-[11px]">
-              Enterprise SEO tools platform &amp; taxonomy CMS engineered with semantic HTML5, Decimal.js exact precision math, and automated schema-dts structured data.
+              <EditableText
+                blockKey="footer.tagline"
+                defaultContent="Enterprise SEO tools platform & taxonomy CMS engineered with semantic HTML5, Decimal.js exact precision math, and automated schema-dts structured data."
+                label="Footer Tagline"
+                multiline
+              />
             </p>
             <div className="flex items-center gap-2 text-emerald-700 font-mono text-[10px] font-semibold">
               <ShieldCheck className="w-3.5 h-3.5" /> CLS = 0.00 Certified
@@ -136,7 +142,13 @@ export const Footer: React.FC<Props> = ({
         </div>
 
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-400 text-[11px] font-mono">
-          <span>&copy; {new Date().getFullYear()} Veritas SEO Platform. All rights reserved.</span>
+          <span>
+            <EditableText
+              blockKey="footer.copyright"
+              defaultContent="© 2026 Veritas SEO Platform. All rights reserved."
+              label="Footer Copyright"
+            />
+          </span>
           <span>Googlebot &amp; Bingbot Ready · JSON-LD &middot; Zod Runtime Validated</span>
         </div>
       </div>

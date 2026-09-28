@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
 import { calculateKeywordDensity } from '../../lib/seo-math';
 import type { SeoTool } from '../../lib/schemas';
-import {
-  Sparkles,
-  AlertTriangle,
-  CheckCircle2,
-  Sliders,
-  Type,
-  Clock,
-  Download,
-  FileSpreadsheet,
-  Layers,
-  BarChart,
-  Gauge,
-} from 'lucide-react';
+import { Sparkles, AlertTriangle, CheckCircle2, Sliders, Type, Download, } from 'lucide-react';
+import { AnalyzerGuide } from './AnalyzerGuide';
 
 interface Props {
   tool: SeoTool;
@@ -46,7 +35,7 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
     tool.defaultInputConfig?.sampleTargetKeyword || CONTENT_PRESETS[0].keyword
   );
   const [includeStopWords, setIncludeStopWords] = useState(false);
-  const [activeTab, setActiveTab] = useState<'1gram' | '2gram' | '3gram'>('2gram');
+  const [activeTab, setActiveTab] = useState<'1gram' | '2gram' | '3gram' | '4gram'>('2gram');
 
   const metrics = calculateKeywordDensity(bodyText, targetKeyword, includeStopWords, 2);
 
@@ -79,12 +68,20 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
   };
 
   const exportCsv = () => {
-    const list = activeTab === '1gram' ? metrics.top1Grams : activeTab === '2gram' ? metrics.top2Grams : metrics.top3Grams;
+    const list =
+      activeTab === '1gram'
+        ? metrics.top1Grams
+        : activeTab === '2gram'
+        ? metrics.top2Grams
+        : activeTab === '3gram'
+        ? metrics.top3Grams
+        : metrics.top4Grams;
     const rows = [
-      ['N-Gram Phrase', 'Occurrences', 'Density %', 'Over-Optimized Status'],
+      ['N-Gram Phrase', 'Occurrences', 'Prominence', 'Density %', 'Over-Optimized Status'],
       ...list.map((item) => [
         `"${item.phrase}"`,
         item.count,
+        item.prominence,
         `${item.density}%`,
         item.isOverOptimized ? 'YES' : 'NO',
       ]),
@@ -173,76 +170,77 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
         <div className="lg:col-span-5 space-y-4">
           <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
             <h4 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-600" /> Target Keyword Diagnostic
+              <Sparkles className="w-4 h-4 text-emerald-600" /> Keyword Contextual Analysis
             </h4>
-
+            
+            {/* Target Diagnostic */}
             {metrics.targetMetrics ? (
-              <div className="space-y-3">
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-medium text-slate-600">Focus Phrase:</span>
-                    <strong className="text-sm text-slate-900 font-semibold font-mono">
-                      "{metrics.targetMetrics.phrase}"
-                    </strong>
-                  </div>
-                  <div className="flex items-center justify-between text-xs text-slate-600 mb-1">
-                    <span>Frequency: <strong className="text-slate-900">{metrics.targetMetrics.count}x</strong></span>
-                    <span>
-                      Exact Density:{' '}
-                      <strong
-                        className={`tabular-nums ${
-                          metrics.targetMetrics.isOverOptimized ? 'text-amber-600' : 'text-emerald-700'
-                        }`}
-                      >
-                        {metrics.targetMetrics.density}%
-                      </strong>
-                    </span>
-                  </div>
+              <div className="space-y-3 pt-4 border-t border-slate-100">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-slate-600">Focus Phrase:</span>
+                  <strong className="text-sm text-slate-900 font-semibold font-mono">
+                    "{metrics.targetMetrics.phrase}"
+                  </strong>
+                </div>
 
-                  {/* Progress bar */}
-                  <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-2">
+                {/* Keyword Distribution Map */}
+                <div className="space-y-1">
+                    <span className="text-[10px] text-slate-500 font-semibold uppercase">Distribution Position</span>
+                    <div className="flex h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                        {Array.from({length: 10}).map((_, i) => {
+                            const segmentStart = (i * bodyText.length) / 10;
+                            const segmentEnd = ((i + 1) * bodyText.length) / 10;
+                            const countInSegment = metrics.targetMetrics!.positions.filter(p => p >= segmentStart && p < segmentEnd).length;
+                            return (
+                                <div key={i} className={`h-full ${countInSegment > 0 ? 'bg-emerald-500' : 'bg-slate-200'}`} style={{width: '10%'}} />
+                            )
+                        })}
+                    </div>
+                </div>
+
+                {/* Progress bar... [KEEP EXISTING PROGRESS BAR LOGIC] */}
+                <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden mt-2">
                     <div
                       className={`h-full transition-all duration-300 ${
-                        metrics.targetMetrics.isOverOptimized
+                        metrics.targetMetrics.density > 4.0
+                          ? 'bg-red-500'
+                          : metrics.targetMetrics.density > 2.5
                           ? 'bg-amber-500'
-                          : metrics.targetMetrics.density >= 1.0
-                          ? 'bg-emerald-600'
-                          : 'bg-blue-500'
+                          : 'bg-emerald-500'
                       }`}
                       style={{ width: `${Math.min(100, (metrics.targetMetrics.density / 4) * 100)}%` }}
                     />
-                  </div>
                 </div>
-
-                {metrics.targetMetrics.isOverOptimized ? (
+                {/* [KEEP EXISTING DIAGNOSTIC ALERTS] */}
+                {metrics.targetMetrics.density > 4.0 ? (
+                  <div className="p-3 rounded-xl bg-red-50/70 border border-red-200 text-xs text-red-800 flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                    <div><strong>Over-Optimized (Risk)!</strong> Density exceeds 4.0%.</div>
+                  </div>
+                ) : metrics.targetMetrics.density > 2.5 ? (
                   <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong>Over-Optimization Warning:</strong> Density exceeds 2.5%. Consider replacing some instances with semantic synonyms (LSI terms) to avoid algorithmic penalties.
-                    </div>
+                    <div><strong>High Density (Caution).</strong></div>
                   </div>
-                ) : metrics.targetMetrics.density >= 1.0 ? (
+                ) : metrics.targetMetrics.density >= 0.5 ? (
                   <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-800 flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong>Optimal Density:</strong> Keyword distribution is in the recommended 1.0%–2.5% zone for algorithmic prominence without keyword stuffing.
-                    </div>
+                    <div><strong>Natural Density.</strong></div>
                   </div>
                 ) : (
                   <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-xs text-blue-800 flex items-start gap-2">
                     <Sliders className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                    <div>
-                      <strong>Low Prominence:</strong> Density is under 1.0%. Consider mentioning the target keyword in key contextual sections.
-                    </div>
+                    <div><strong>Low Prominence.</strong></div>
                   </div>
                 )}
               </div>
             ) : (
               <div className="text-center py-6 text-slate-400 text-xs">
-                Enter a target keyword to evaluate its exact frequency and optimization ratio.
+                Enter a target keyword to evaluate.
               </div>
             )}
           </div>
+
 
           {/* Quick Metrics Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -306,6 +304,15 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
               >
                 3-Word (Trigrams)
               </button>
+              <button
+                type="button"
+                onClick={() => setActiveTab('4gram')}
+                className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                  activeTab === '4gram' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-600'
+                }`}
+              >
+                4-Word (Quadgrams)
+              </button>
             </div>
 
             <button
@@ -321,7 +328,7 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
         {/* Table Content */}
         <div className="overflow-x-auto">
           {(() => {
-            const list = activeTab === '1gram' ? metrics.top1Grams : activeTab === '2gram' ? metrics.top2Grams : metrics.top3Grams;
+            const list = activeTab === '1gram' ? metrics.top1Grams : activeTab === '2gram' ? metrics.top2Grams : activeTab === '3gram' ? metrics.top3Grams : metrics.top4Grams;
 
             if (list.length === 0) {
               return (
@@ -335,33 +342,35 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
                   <tr className="bg-slate-50/80 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                    <th className="py-3 px-6">Phrase / Keyword</th>
-                    <th className="py-3 px-6 text-center">Occurrences</th>
-                    <th className="py-3 px-6 text-center">Exact Density</th>
-                    <th className="py-3 px-6 text-right">Status Flag</th>
+                    <th className="py-3 px-6">Phrase</th>
+                    <th className="py-3 px-6 text-center">Freq</th>
+                    <th className="py-3 px-6 text-center">Prominence</th>
+                    <th className="py-3 px-6 text-center">Density</th>
+                    <th className="py-3 px-6 text-right">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {list.map((item, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="py-3.5 px-6 font-medium text-slate-900">
-                        <span className="font-mono text-xs bg-slate-100 px-2 py-1 rounded-md text-slate-800">
-                          {item.phrase}
-                        </span>
+                      <td className="py-3.5 px-6 font-medium text-slate-900 text-xs font-mono">
+                        {item.phrase}
                       </td>
-                      <td className="py-3.5 px-6 text-center font-mono text-slate-700 tabular-nums">
+                      <td className="py-3.5 px-6 text-center tabular-nums text-slate-600">
                         {item.count}
                       </td>
-                      <td className="py-3.5 px-6 text-center font-mono font-semibold text-slate-900 tabular-nums">
+                      <td className="py-3.5 px-6 text-center tabular-nums font-semibold text-indigo-700">
+                        {item.prominence}
+                      </td>
+                      <td className="py-3.5 px-6 text-center tabular-nums font-semibold text-slate-900">
                         {item.density}%
                       </td>
                       <td className="py-3.5 px-6 text-right">
                         {item.isOverOptimized ? (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200">
-                            <AlertTriangle className="w-3 h-3" /> Over-Optimized
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">
+                            <AlertTriangle className="w-3 h-3" /> Dense
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">
                             <CheckCircle2 className="w-3 h-3" /> Natural
                           </span>
                         )}
@@ -374,6 +383,8 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
           })()}
         </div>
       </div>
+      
+      <AnalyzerGuide />
     </div>
   );
 };

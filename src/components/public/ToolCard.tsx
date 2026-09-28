@@ -2,7 +2,8 @@ import React from 'react';
 import type { SeoTool } from '../../lib/schemas';
 import { useCms } from '../../lib/store';
 import { IconRenderer } from '../ui/IconRenderer';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { EditableText } from './EditableText';
+import { ArrowRight } from 'lucide-react';
 
 interface Props {
   tool: SeoTool;
@@ -10,7 +11,7 @@ interface Props {
 }
 
 export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
-  const { publicCategories, publicSubCategories } = useCms();
+  const { publicCategories, publicSubCategories, updateTool } = useCms();
   const parentCat = publicCategories.find((c) => c.id === tool.categoryId);
   const parentSub = publicSubCategories.find((s) => s.id === tool.subCategoryId);
 
@@ -54,10 +55,21 @@ export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
         {/* Title and Summary */}
         <div className="space-y-1.5">
           <h3 className="text-base font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
-            {tool.title}
+            <EditableText
+              value={tool.title}
+              onSave={(val) => updateTool(tool.id, { title: val })}
+              label={`Tool Title (${tool.slug})`}
+              allowHtml={false}
+            />
           </h3>
-          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-            {tool.shortSummary}
+          <p className="text-xs text-slate-600 leading-relaxed">
+            <EditableText
+              value={tool.shortSummary}
+              onSave={(val) => updateTool(tool.id, { shortSummary: val })}
+              label={`Tool Summary (${tool.slug})`}
+              multiline
+              allowHtml={false}
+            />
           </p>
         </div>
       </div>
@@ -70,7 +82,7 @@ export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
           </span>
           {tool.updatedAt && (
             <time dateTime={tool.updatedAt} className="text-[10px] font-mono text-slate-400 hidden sm:inline">
-              · {new Date(tool.updatedAt).toLocaleDateString()}
+              · {tool.updatedAt.slice(0, 10)}
             </time>
           )}
         </div>

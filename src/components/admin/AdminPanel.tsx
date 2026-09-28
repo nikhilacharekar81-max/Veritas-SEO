@@ -11,6 +11,8 @@ import { LinkEquityGraphVisualizer } from './LinkEquityGraphVisualizer';
 import { RobotsSitemapManager } from './RobotsSitemapManager';
 import { AuditLogViewer } from './AuditLogViewer';
 import { BackupRestoreManager } from './BackupRestoreManager';
+import { ContentManager } from './ContentManager';
+import { BlogManager } from './BlogManager';
 import { AnalyticsDashboard } from './AnalyticsDashboard';
 import {
   FolderTree,
@@ -26,13 +28,18 @@ import {
   Sparkles,
   TrendingUp,
   Network,
+  FileText,
 } from 'lucide-react';
 
 interface Props {
   onBackToPublic: () => void;
+  onViewBlogPost?: (slug: string) => void;
+  initialTab?: AdminTab;
+  initialEditBlogPostId?: string | null;
 }
 
 export type AdminTab =
+  | 'blog'
   | 'analytics'
   | 'tree'
   | 'categories'
@@ -43,11 +50,17 @@ export type AdminTab =
   | 'link_equity'
   | 'robots_sitemap'
   | 'audit'
-  | 'backup';
+  | 'backup'
+  | 'content';
 
-export const AdminPanel: React.FC<Props> = ({ onBackToPublic }) => {
-  const [activeTab, setActiveTab] = useState<AdminTab>('analytics');
-  const { categories, subCategories, tools, redirects, toolUsageEvents } = useCms();
+export const AdminPanel: React.FC<Props> = ({
+  onBackToPublic,
+  onViewBlogPost,
+  initialTab = 'blog',
+  initialEditBlogPostId = null,
+}) => {
+  const [activeTab, setActiveTab] = useState<AdminTab>(initialTab);
+  const { categories, subCategories, tools, redirects, toolUsageEvents, blogPosts } = useCms();
 
   // Controlled modal triggers across tabs
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
@@ -63,6 +76,12 @@ export const AdminPanel: React.FC<Props> = ({ onBackToPublic }) => {
   const [initialToolSubCatId, setInitialToolSubCatId] = useState<string | undefined>(undefined);
 
   const navItems: { id: AdminTab; label: string; icon: React.ReactNode; badge?: number }[] = [
+    {
+      id: 'blog',
+      label: 'Blog Posts (WP CMS)',
+      icon: <FileText className="w-4 h-4" />,
+      badge: blogPosts.filter((p) => p.status !== 'trash').length,
+    },
     { id: 'analytics', label: 'Analytics Dashboard', icon: <TrendingUp className="w-4 h-4" />, badge: toolUsageEvents.length },
     { id: 'tree', label: 'Taxonomy Tree', icon: <FolderTree className="w-4 h-4" /> },
     { id: 'categories', label: 'Main Categories', icon: <Folder className="w-4 h-4" />, badge: categories.length },
@@ -72,6 +91,7 @@ export const AdminPanel: React.FC<Props> = ({ onBackToPublic }) => {
     { id: 'health', label: 'Health Auditor', icon: <ShieldCheck className="w-4 h-4" /> },
     { id: 'link_equity', label: 'Link Equity Flow', icon: <Network className="w-4 h-4" /> },
     { id: 'robots_sitemap', label: 'Robots & Sitemap', icon: <Bot className="w-4 h-4" /> },
+    { id: 'content', label: 'Content Manager', icon: <Sparkles className="w-4 h-4" /> },
     { id: 'audit', label: 'Audit Log', icon: <History className="w-4 h-4" /> },
     { id: 'backup', label: 'Backup & Restore', icon: <Database className="w-4 h-4" /> },
   ];
@@ -149,6 +169,13 @@ export const AdminPanel: React.FC<Props> = ({ onBackToPublic }) => {
 
         {/* Dynamic Content Pane */}
         <main className="flex-1 min-w-0">
+          {activeTab === 'blog' && (
+            <BlogManager
+              onViewPostOnFrontend={onViewBlogPost}
+              initialEditPostId={initialEditBlogPostId}
+            />
+          )}
+
           {activeTab === 'analytics' && <AnalyticsDashboard />}
 
           {activeTab === 'tree' && (
@@ -223,6 +250,7 @@ export const AdminPanel: React.FC<Props> = ({ onBackToPublic }) => {
           {activeTab === 'health' && <SiteWideAuditScanner />}
           {activeTab === 'link_equity' && <LinkEquityGraphVisualizer />}
           {activeTab === 'robots_sitemap' && <RobotsSitemapManager />}
+          {activeTab === 'content' && <ContentManager onLaunchFrontendEditor={onBackToPublic} />}
           {activeTab === 'audit' && <AuditLogViewer />}
           {activeTab === 'backup' && <BackupRestoreManager />}
         </main>
