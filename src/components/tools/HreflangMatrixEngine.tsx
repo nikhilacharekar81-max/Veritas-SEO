@@ -14,6 +14,7 @@ import {
   Sparkles,
   Info,
 } from 'lucide-react';
+import { HreflangMatrixGuide } from './HreflangMatrixGuide';
 
 interface Props {
   tool: SeoTool;
@@ -396,6 +397,11 @@ ${links}
         <pre className="p-4 bg-slate-950 text-emerald-400 rounded-2xl font-mono text-xs overflow-x-auto leading-relaxed border border-slate-800">
           <code>{generateOutput()}</code>
         </pre>
+      </div>
+
+      {/* COMPREHENSIVE HREFLANG MATRIX & INTERNATIONAL SEO GUIDE */}
+      <div className="w-full h-auto pt-8 border-t border-slate-200/80">
+        <HreflangMatrixGuide />
       </div>
     </div>
   );

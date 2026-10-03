@@ -1,9 +1,12 @@
 import React from 'react';
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import {
   DEMO_PRESET_CATEGORIES,
   DEMO_PRESET_SUBCATEGORIES,
+  DEMO_PRESET_TOOLS,
 } from '../../../src/lib/demo-presets';
+import { generateCollectionPageSchema } from '../../../src/lib/schema-generator';
 import App from '../../../src/App';
 
 interface Props {
@@ -12,17 +15,17 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const baseUrl = 'https://veritas-seo.dev';
   const subCategory = DEMO_PRESET_SUBCATEGORIES.find((s) => s.slug === slug);
 
   if (!subCategory) {
     return {
-      title: `${slug.replace(/-/g, ' ')} Sub-Category Hub | Veritas SEO`,
+      title: 'Sub-Category Not Found | Veritas SEO',
       description: 'Explore specialized sub-category SEO tools and calculators.',
     };
   }
 
-  const canonicalUrl =
-    subCategory.seo?.canonicalUrl || `https://veritas-seo.dev/subcategory/${subCategory.slug}`;
+  const canonicalUrl = subCategory.seo?.canonicalUrl || `${baseUrl}/subcategory/${subCategory.slug}`;
 
   return {
     title: subCategory.seo?.metaTitle || `${subCategory.name} | Veritas SEO`,
@@ -35,24 +38,44 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: subCategory.seo?.ogDescription || subCategory.description,
       url: canonicalUrl,
       type: 'website',
+      siteName: 'Veritas SEO',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: subCategory.seo?.twitterTitle || subCategory.name,
+      description: subCategory.seo?.twitterDescription || subCategory.description,
     },
   };
 }
 
 export default async function SubCategoryPage({ params }: Props) {
   const { slug } = await params;
+  const baseUrl = 'https://veritas-seo.dev';
+
   const subCategory = DEMO_PRESET_SUBCATEGORIES.find((s) => s.slug === slug);
-  const parentCategory = subCategory
-    ? DEMO_PRESET_CATEGORIES.find((c) => c.id === subCategory.categoryId)
-    : DEMO_PRESET_CATEGORIES[0];
+  if (!subCategory) {
+    notFound();
+  }
+
+  const parentCategory = DEMO_PRESET_CATEGORIES.find((c) => c.id === subCategory.categoryId);
+  const subCategoryTools = DEMO_PRESET_TOOLS.filter((t) => t.subCategoryId === subCategory.id);
+  const canonicalUrl = subCategory.seo?.canonicalUrl || `${baseUrl}/subcategory/${slug}`;
+
+  const collectionSchema = generateCollectionPageSchema(subCategory, subCategoryTools, canonicalUrl);
 
   return (
-    <App
-      initialRoute={{
-        type: 'subcategory',
-        categorySlug: parentCategory?.slug || 'on-page-serp',
-        subCategorySlug: slug,
-      }}
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
+      />
+      <App
+        initialRoute={{
+          type: 'subcategory',
+          categorySlug: parentCategory?.slug || 'on-page-serp',
+          subCategorySlug: slug,
+        }}
+      />
+    </>
   );
 }

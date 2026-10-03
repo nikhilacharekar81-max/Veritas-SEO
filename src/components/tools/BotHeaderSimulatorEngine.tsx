@@ -13,6 +13,7 @@ import {
   FileCode,
   Terminal,
 } from 'lucide-react';
+import { BotHeaderInspectorGuide } from './BotHeaderInspectorGuide';
 
 interface Props {
   tool: SeoTool;
@@ -24,6 +25,7 @@ interface BotProfile {
   userAgent: string;
   supportsBrotli: boolean;
   respectsXRobots: boolean;
+  category: 'Search Crawler' | 'AI Search' | 'AI Training' | 'Assistant';
 }
 
 const BOTS: Record<string, BotProfile> = {
@@ -32,30 +34,63 @@ const BOTS: Record<string, BotProfile> = {
     userAgent: 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
     supportsBrotli: true,
     respectsXRobots: true,
+    category: 'Search Crawler',
   },
   googlebot_desktop: {
     name: 'Googlebot Desktop (Chromium 124)',
     userAgent: 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/124.0.0.0 Safari/537.36',
     supportsBrotli: true,
     respectsXRobots: true,
+    category: 'Search Crawler',
   },
   bingbot: {
     name: 'Microsoft Bingbot',
     userAgent: 'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
     supportsBrotli: true,
     respectsXRobots: true,
+    category: 'Search Crawler',
+  },
+  oai_searchbot: {
+    name: 'OAI-SearchBot (ChatGPT Search)',
+    userAgent: 'Mozilla/5.0 (compatible; OAI-SearchBot/1.0; +https://openai.com/searchbot)',
+    supportsBrotli: true,
+    respectsXRobots: true,
+    category: 'AI Search',
   },
   gptbot: {
-    name: 'OpenAI GPTBot (AI Crawler)',
+    name: 'OpenAI GPTBot (AI Model Training)',
     userAgent: 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; GPTBot/1.2; +https://openai.com/gptbot)',
     supportsBrotli: false,
     respectsXRobots: true,
+    category: 'AI Training',
+  },
+  claudebot: {
+    name: 'Anthropic ClaudeBot',
+    userAgent: 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; ClaudeBot/1.0; +claudebot@anthropic.com)',
+    supportsBrotli: true,
+    respectsXRobots: true,
+    category: 'AI Training',
+  },
+  perplexitybot: {
+    name: 'PerplexityBot (Search Engine)',
+    userAgent: 'Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; PerplexityBot/1.0; +https://perplexity.ai/perplexitybot)',
+    supportsBrotli: true,
+    respectsXRobots: true,
+    category: 'AI Search',
+  },
+  google_extended: {
+    name: 'Google-Extended (Gemini & Vertex AI)',
+    userAgent: 'Google-Extended (+https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers)',
+    supportsBrotli: true,
+    respectsXRobots: true,
+    category: 'AI Training',
   },
   applebot: {
     name: 'Applebot (Siri & Spotlight)',
     userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15 (Applebot/0.1; +http://www.apple.com/go/applebot)',
     supportsBrotli: true,
     respectsXRobots: true,
+    category: 'Assistant',
   },
 };
 
@@ -117,7 +152,7 @@ export const BotHeaderSimulatorEngine: React.FC<Props> = ({ onPerformCalculation
   };
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs space-y-8">
+    <div id="interactive-inspector" className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-xs space-y-8 scroll-mt-24">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
         <div>
@@ -238,6 +273,11 @@ export const BotHeaderSimulatorEngine: React.FC<Props> = ({ onPerformCalculation
         <pre className="p-5 bg-slate-950 text-emerald-400 rounded-2xl font-mono text-xs overflow-x-auto leading-relaxed border border-slate-800">
           <code>{rawHeaders}</code>
         </pre>
+      </div>
+
+      {/* COMPREHENSIVE BOT HEADER INSPECTOR GUIDE */}
+      <div className="w-full h-auto pt-8 border-t border-slate-200/80">
+        <BotHeaderInspectorGuide />
       </div>
     </div>
   );

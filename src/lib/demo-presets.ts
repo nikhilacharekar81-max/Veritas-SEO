@@ -159,39 +159,111 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     },
     educationalContent: {
       howItWorks:
-        'Google measures title and meta description boundaries by rendered pixel width rather than raw character counts. Because proportional fonts (like Arial or Roboto) give wider bounding boxes to capital letters and wide glyphs (e.g., "W", "M") than thin letters (e.g., "i", "l"), calculating exact pixel math prevents unwanted truncation on search result pages.',
+        'Writing a good SEO title is only part of the job. You also want to know how much space that title takes up when it appears in a search result.\n\nEnter your title into the Google SERP Pixel Width Simulator to check its approximate pixel width and see a search-result preview. You can use the preview to spot titles that look too long, put important information too far to the right, or simply don\'t look good at a glance. It is a quick way to check your title before you publish a page.\n\nWhy check the pixel width of a title?\nYou may have heard that an SEO title should be around 50–60 characters. That can be a useful starting point, but characters do not all take up the same amount of space. For example, a title made mostly of narrow letters such as "i" can take up much less horizontal space than one containing many wide letters such as "W". That\'s why character count alone cannot tell you exactly how wide a title will appear. Pixel width gives you another way to look at the title: how much horizontal space the text takes up. The goal isn\'t to hit a magic number. The goal is to make sure the important part of your title is clear and useful to someone looking at the search result.\n\nHow to use the SERP Pixel Width Simulator\nUsing the tool is simple:\n1. Enter your SEO title — Paste or type the title you plan to use for your page.\n2. Check the pixel width — The tool estimates how wide your title is in pixels, giving you more information than character count alone.\n3. Look at the search preview — Check if the main topic is obvious, important info appears early, and if it feels unnecessarily long.\n4. Check different screen sizes — Review both desktop and mobile layouts where available.\n5. Edit only when there is a reason — Make changes when they improve clarity rather than chasing arbitrary numbers.\n\nWhat is SERP pixel width?\nSERP pixel width refers to the horizontal space that text takes up when displayed in a search result. A pixel is a unit used to measure screen dimensions. Unlike character count, pixel width accounts for actual letters, numbers, spaces, and symbols used.\n\nIs there a maximum pixel width for Google titles?\nThere isn\'t one permanent, official pixel-width number that guarantees a title will always fit in Google\'s search results. You will often see recommendations around 580–600 pixels, but these should be treated as practical estimates rather than an official Google rule.\n\nWhy does Google sometimes change my title?\nYou may write one title in your page\'s HTML and see something slightly different in Google because Google can generate the title link using information from the page and other sources.\n\nWhat about the meta description?\nThe same basic idea applies to your meta description. There isn\'t one fixed character or pixel limit that guarantees your description will always appear exactly as written.',
       formulaMethodology:
-        'Desktop Title Limit = 580px max (approx. 55-60 chars). Mobile Title Limit = 540px max. Meta Description Desktop Limit = 920px (approx. 155-160 chars). The calculation uses Decimal.js character width scaling maps derived from Google Chromium layout engine metrics.',
+        'Pixel width vs. character count:\n- Character count tells you how many characters are in the title.\n- Pixel width tells you approximately how much horizontal space the title uses.\n- SERP preview gives you a visual idea of how the title appears.\n\nHow to write a useful SEO title:\n1. Tell people what the page is about.\n2. Put the important information early.\n3. Don\'t add words just to reach a target length.\n4. Keep it natural and write for the person searching.\n5. Make sure it matches the page content.\n\nA simple workflow for better SEO titles:\nWrite → Check → Preview → Improve → Publish',
       stepByStepGuide: [
         {
           id: 'step_1',
-          stepTitle: 'Enter Proposed URL & Title Tag',
-          stepDescription: 'Type your title tag and watch the real-time pixel meter. Keep the bar in the green zone (<580px).',
+          stepTitle: 'Enter Your SEO Title',
+          stepDescription: 'Paste or type the title you plan to use for your page in the simulator input.',
         },
         {
           id: 'step_2',
-          stepTitle: 'Craft Compelling Meta Description',
-          stepDescription: 'Include primary call-to-actions while maintaining a pixel width below 920px.',
+          stepTitle: 'Check Pixel Width & Preview',
+          stepDescription: 'Review the estimated pixel width and inspect the visual search result preview as a user would see it.',
         },
         {
           id: 'step_3',
-          stepTitle: 'Toggle Mobile / Desktop & Rich Snippets',
-          stepDescription: 'Inspect star ratings, breadcrumbs, and publication dates to verify snippet presentation.',
+          stepTitle: 'Review Desktop & Mobile Layouts',
+          stepDescription: 'Verify that important keywords appear early and won\'t be truncated on different screen sizes.',
         },
       ],
     },
     faqs: [
       {
         id: 'faq_1',
-        question: 'Why does Google truncate titles by pixel width instead of character count?',
+        question: 'What does a SERP pixel width simulator do?',
         answer:
-          'Google renders SERP snippets using a fixed-width container. Since letters like "W" and "M" occupy up to 12 pixels while "i" and "l" occupy only 4 pixels, character counts can be misleading. Pixel width measurement guarantees precision.',
+          'It estimates how much horizontal space your SEO title takes up and shows a visual search-result preview. This lets you check the title before publishing instead of relying only on its character count.',
       },
       {
         id: 'faq_2',
-        question: 'What happens if my title exceeds 580 pixels?',
+        question: 'Why can two titles with the same number of characters have different widths?',
         answer:
-          'Google will cut off the title with an ellipsis (...) or may dynamically rewrite the title using on-page H1 or OpenGraph tags.',
+          "Letters and symbols don't all have the same width. For example, a title containing several W characters will generally take up more space than one containing the same number of i characters. Pixel width accounts for this difference, while character count does not.",
+      },
+      {
+        id: 'faq_3',
+        question: 'What pixel width should my SEO title be?',
+        answer:
+          'There is no single pixel width that guarantees a title will display perfectly in every Google search result. Common figures such as 580–600 pixels are useful reference points, but they are not official Google limits. Use the number together with the preview rather than trying to hit one exact target.',
+      },
+      {
+        id: 'faq_4',
+        question: 'Is a 60-character SEO title limit required by Google?',
+        answer:
+          'No. Google does not require titles to stay within 60 characters. The 50–60 character guideline is a common SEO recommendation, but titles can be shorter or longer. What matters more is whether the title clearly describes the page and puts useful information where people can see it.',
+      },
+      {
+        id: 'faq_5',
+        question: 'Can a title fit within the pixel width but still be a bad SEO title?',
+        answer:
+          "Yes. A title can have a reasonable width and still be vague, misleading, repetitive, or difficult to understand. Pixel width only tells you about the space the text occupies. It doesn't tell you whether the title is useful or relevant to the page.",
+      },
+      {
+        id: 'faq_6',
+        question: 'Will the simulator show exactly what Google will display?',
+        answer:
+          'No. A simulator is an approximation. Google can change the way search results are displayed, and the final appearance can vary depending on factors such as the device, search query, and other search-result elements. Use the preview to review your title, not as a guarantee of its final appearance.',
+      },
+      {
+        id: 'faq_7',
+        question: "Why doesn't Google always show the title I wrote?",
+        answer:
+          'Google can create the title link shown in search results from information on the page and other relevant sources. Because of this, the text you put in the HTML <title> element is not an absolute guarantee of what Google will display.',
+      },
+      {
+        id: 'faq_8',
+        question: 'Should I shorten a title if the simulator shows it as too wide?',
+        answer:
+          'Not automatically. First check whether the title contains unnecessary words or whether the important information could be moved earlier. If the title is clear and useful as it is, changing it solely to reach a particular pixel number may not improve it.',
+      },
+      {
+        id: 'faq_9',
+        question: 'Is pixel width more important than character count?',
+        answer:
+          'They measure different things. Character count tells you how many characters your title contains. Pixel width estimates how much horizontal space those characters occupy. Neither number should be treated as a standalone rule for writing titles.',
+      },
+      {
+        id: 'faq_10',
+        question: 'Why should I check the mobile preview?',
+        answer:
+          'Mobile screens generally provide less horizontal space than desktop layouts. Looking at the mobile preview can help you notice when a title becomes crowded or when important information appears too far into the title.',
+      },
+      {
+        id: 'faq_11',
+        question: 'Can this tool tell me whether my page will rank?',
+        answer:
+          'No. Pixel width is a presentation measurement, not a ranking metric. The tool can help you review the appearance and readability of your title, but it cannot predict where your page will appear in Google.',
+      },
+      {
+        id: 'faq_12',
+        question: 'Does the simulator check my meta description too?',
+        answer:
+          'That depends on the features provided by the tool. If a meta description preview is available, it can help you review how the description may look in a search result. However, Google may generate a different snippet from the content on your page.',
+      },
+      {
+        id: 'faq_13',
+        question: 'What should I look for after checking my title?',
+        answer:
+          "Don't focus only on the pixel number. Read the title as if you were seeing it in a search result. Check that the page topic is clear, key info isn't buried, there are no unnecessary words, it sounds natural, matches the page, and makes sense on smaller screens.",
+      },
+      {
+        id: 'faq_14',
+        question: 'Should I try to make every SEO title the same length?',
+        answer:
+          'No. Different pages need different titles. A product page, blog post, category page, and SEO tool page may need different amounts of information to describe what they offer. Write the clearest title for the specific page, then use the pixel-width check to review how it may appear.',
       },
     ],
     seo: {
@@ -295,41 +367,158 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 76,
     engineType: 'schema-jsonld-generator',
     defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: 'Comprehensive guide to Schema.org JSON-LD generation and Google rich results',
+        type: 'educational_methodology',
+        isEnabled: true,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: true,
+        displayOrder: 5,
+      },
+    ],
     educationalContent: {
-      howItWorks:
-        'Constructs schema-dts compliant JSON-LD structured data scripts that can be directly embedded into Next.js or HTML5 <head> tags for Google Rich Snippets.',
-      formulaMethodology:
-        'Implements Google Search Central schema specifications with strict type validation for required properties, IDs, and nested child entities.',
+      howItWorks: 'The builder generates Schema.org JSON-LD structured data by transforming input properties into valid JSON-LD 1.1 script tags.',
+      formulaMethodology: 'Structured according to official Schema.org vocabularies and Google Search Central technical guidelines.',
       stepByStepGuide: [
         {
           id: 'step_1',
-          stepTitle: 'Choose Schema Type',
-          stepDescription: 'Select between WebApplication, FAQPage, Breadcrumbs, or Article schemas.',
+          stepTitle: 'Select Schema Entity Type',
+          stepDescription: 'Choose the entity type (Article, Product, Organization, etc.) that accurately represents your webpage.',
         },
         {
           id: 'step_2',
-          stepTitle: 'Populate Entity Fields',
-          stepDescription: 'Fill in required schema properties including URLs, titles, and questions.',
+          stepTitle: 'Enter Real Properties',
+          stepDescription: 'Add names, URLs, dates, prices, images, and author details that match visible page content.',
         },
         {
           id: 'step_3',
-          stepTitle: 'Copy & Validate',
-          stepDescription: 'Copy the generated JSON-LD script and test in Google Rich Results Test.',
+          stepTitle: 'Copy & Test Markup',
+          stepDescription: 'Copy the generated JSON-LD script snippet and validate with Google Rich Results Test.',
         },
       ],
     },
     faqs: [
       {
         id: 'faq_1',
-        question: 'Why is JSON-LD preferred over Microdata or RDFa?',
-        answer:
-          'Google officially recommends JSON-LD because it is decoupled from presentation HTML, easier to maintain programmatically, and less prone to syntax errors during template refactors.',
+        question: 'What is a JSON-LD Schema Generator?',
+        answer: 'A JSON-LD Schema Generator creates Schema.org structured data in JSON-LD format from information you provide, so you don\'t have to write the markup manually.',
+      },
+      {
+        id: 'faq_2',
+        question: 'What is a structured data builder?',
+        answer: 'A structured data builder helps you create structured data by selecting an appropriate schema type and entering its relevant properties.',
+      },
+      {
+        id: 'faq_3',
+        question: 'What is a Schema Markup Tool?',
+        answer: 'A Schema Markup Tool helps create or work with structured data that describes the content and entities on a webpage.',
+      },
+      {
+        id: 'faq_4',
+        question: 'Is JSON-LD the same as Schema.org?',
+        answer: 'No. Schema.org provides the vocabulary, while JSON-LD is one format used to express structured data.',
+      },
+      {
+        id: 'faq_5',
+        question: 'Does JSON-LD improve Google rankings?',
+        answer: 'Valid JSON-LD does not guarantee higher rankings. It can help search engines understand page content and may make eligible pages suitable for supported rich-result features.',
+      },
+      {
+        id: 'faq_6',
+        question: 'Why isn\'t my schema showing as a rich result?',
+        answer: 'Check that the schema matches the page, required properties are present, the information is accurate, and Google can access the page. Even valid markup does not guarantee a rich result.',
+      },
+      {
+        id: 'faq_7',
+        question: 'Does valid JSON mean my schema is correct?',
+        answer: 'No. Valid JSON only confirms that the data follows JSON syntax. The schema can still use the wrong type, contain incorrect information or fail Google\'s requirements.',
+      },
+      {
+        id: 'faq_8',
+        question: 'Should Schema markup match visible content?',
+        answer: 'Yes. Important information in your structured data should accurately represent what users can find on the page.',
+      },
+      {
+        id: 'faq_9',
+        question: 'Should I fill every Schema field?',
+        answer: 'No. Use required properties and relevant optional properties that contain accurate information. More properties do not automatically make better Schema.',
+      },
+      {
+        id: 'faq_10',
+        question: 'How do I test JSON-LD?',
+        answer: 'Use Google\'s Rich Results Test for supported Google rich-result features. The Schema.org Validator can also help inspect Schema.org markup.',
+      },
+      {
+        id: 'faq_11',
+        question: 'Can I have multiple Schema types on one page?',
+        answer: 'Yes, when they genuinely describe relevant entities or content on the page. Avoid adding unrelated types simply to target more search features.',
+      },
+      {
+        id: 'faq_12',
+        question: 'Can I use FAQPage schema on any website?',
+        answer: 'FAQPage is a valid Schema.org type, but Google currently limits FAQ rich-result eligibility primarily to well-known authoritative government and health websites.',
+      },
+      {
+        id: 'faq_13',
+        question: 'Where should I put JSON-LD?',
+        answer: 'JSON-LD is commonly placed in a <script type="application/ld+json"> block on the page. Follow the implementation requirements of your website platform.',
+      },
+      {
+        id: 'faq_14',
+        question: 'Should I check for existing Schema markup?',
+        answer: 'Yes. Your CMS, SEO plugin, theme, ecommerce platform or framework may already generate structured data.',
+      },
+      {
+        id: 'faq_15',
+        question: 'Can I use this tool without knowing JSON-LD?',
+        answer: 'Yes. The builder creates the JSON-LD structure for you. You should still review the generated information before publishing it.',
       },
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Schema.org JSON-LD Generator & Rich Snippet Builder | Veritas SEO',
-        'Build and validate Google-compliant JSON-LD structured data markup for WebApplication, FAQPage, and BreadcrumbList.',
+        'Free Schema.org JSON-LD Generator & Structured Data Builder',
+        'Create valid JSON-LD structured data instantly. Select your schema type, fill in real page details, preview code live, and copy clean markup for your website.',
         'https://veritas-seo.dev/tool/schema-jsonld-generator'
       ),
       focusKeyword: 'schema json-ld generator',
@@ -352,35 +541,96 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 52,
     engineType: 'redirect-chain-inspector',
     defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
+      },
+    ],
     educationalContent: {
-      howItWorks:
-        'Analyzes multi-hop HTTP redirect pathways, identifies loss of link equity (PageRank dampening), and flags non-permanent 302/307 status codes.',
-      formulaMethodology:
-        'Every unnecessary redirect hop adds server latency (TTFB) and risks crawl abandonment. Best practice limits redirect chains to a single direct 301 hop.',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Input Source URL Path',
-          stepDescription: 'Provide the legacy URL and subsequent destination hops.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Trace Hop Sequence',
-          stepDescription: 'Inspect status codes, response headers, and loop warnings.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Flatten Chain',
-          stepDescription: 'Update CMS rewrite rules to route legacy paths directly to the final 200 OK canonical target.',
-        },
-      ],
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
     },
     faqs: [
       {
-        id: 'faq_1',
-        question: 'Does a 301 redirect pass 100% of link equity?',
-        answer:
-          'Google has confirmed that 301 redirects pass full PageRank without penalty, but long chains (>3 hops) can cause crawlers to drop out before reaching the final URL.',
+        id: 'faq_redir_1',
+        question: 'What is a 301 redirect?',
+        answer: 'A 301 tells clients and search engines that a URL has moved permanently to another location.',
+      },
+      {
+        id: 'faq_redir_2',
+        question: 'What is a redirect chain?',
+        answer: 'A redirect chain happens when one URL redirects to another URL, which redirects again before reaching the final page.',
+      },
+      {
+        id: 'faq_redir_3',
+        question: 'Are redirect chains bad for SEO?',
+        answer: 'Long or unnecessary chains can add latency and make crawling less efficient. Google recommends redirecting directly to the final destination when possible.',
+      },
+      {
+        id: 'faq_redir_4',
+        question: 'What is the difference between 301 and 302?',
+        answer: 'A 301 indicates a permanent move, while a 302 indicates a temporary redirect. Google treats them differently when determining which URL should be canonical.',
+      },
+      {
+        id: 'faq_redir_5',
+        question: 'What does 200 OK mean?',
+        answer: 'It means the server successfully returned the requested resource.',
+      },
+      {
+        id: 'faq_redir_6',
+        question: 'What does 404 mean?',
+        answer: 'A 404 means the requested resource could not be found.',
+      },
+      {
+        id: 'faq_redir_7',
+        question: 'What should I do if a redirect ends in 404?',
+        answer: 'Check the redirect rule and make sure the destination URL exists and is the intended replacement.',
       },
     ],
     seo: {
@@ -409,37 +659,62 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 68,
     engineType: 'hreflang-tag-matrix',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Validates bidirectional multi-language and regional alternate URL links to prevent geo-targeting conflicts and duplicate content penalties in Google search results.',
-      formulaMethodology:
-        'Ensures every target language-region pairing points reciprocally back to all alternates with a global x-default fallback for unmatched geographical users.',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Configure Regional Locales',
-          stepDescription: 'Specify ISO language and country codes (e.g. en-US, en-GB, fr-FR, de-DE).',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Designate x-Default Fallback',
-          stepDescription: 'Select the primary global landing page for unmatched visitor locales.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Deploy HTML or XML Sitemap',
-          stepDescription: 'Copy the generated <link rel="alternate"> HTML or XML sitemap node block.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'Why is bidirectional hreflang required by Google?',
-        answer:
-          'If Page A links to Page B as an alternate, Page B must also link back to Page A. Without bidirectional confirmation, Google ignores the directive to prevent unauthorized third-party claiming.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
         'Hreflang Tag Matrix & Multi-Region SEO Validator | Veritas SEO',
@@ -466,44 +741,69 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 114,
     engineType: 'serp-rank-calculator',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Simulates organic click-through distributions based on real-world Search Central empirical CTR models and Google AI Overview (SGE) displacement benchmarks.',
-      formulaMethodology:
-        'Monthly Clicks = (Search Volume × CTR %) / 100. Organic Traffic Value = Clicks × Avg Equivalent Google Ads Cost-Per-Click ($).',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Enter Monthly Keyword Search Volume',
-          stepDescription: 'Input the aggregate monthly search volume for your target keyword topic.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Set Current & Target Positions',
-          stepDescription: 'Select your current ranking rank (#1–20) and your projected target rank.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Review Traffic & Revenue Uplift',
-          stepDescription: 'Analyze the estimated monthly click expansion and PPC advertising replacement value.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'How do Google AI Overviews impact organic CTR curves?',
-        answer:
-          'AI Overviews occupy prime real estate above position #1, typically reducing traditional #1 blue link CTR from ~28% down to ~19% while shifting discovery into citation carousels.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
-        'Google SERP CTR Curve & Organic Traffic Forecaster | Veritas SEO',
-        'Model organic click distributions, simulate rank progression (#1 to #20), and calculate equivalent PPC value.',
+        'Free SERP CTR Forecaster: Calculate SEO Traffic Potential',
+        'Estimate organic clicks using search volume, ranking position, and realistic CTR benchmarks. Model traffic scenarios and account for modern SERP features.',
         'https://veritas-seo.dev/tool/serp-ctr-forecaster'
       ),
-      focusKeyword: 'serp ctr curve calculator',
+      focusKeyword: 'serp ctr forecaster',
     },
     createdAt: PRESET_TIMESTAMP,
     updatedAt: PRESET_TIMESTAMP,
@@ -523,41 +823,102 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 82,
     engineType: 'bot-header-inspector',
     defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
+      },
+    ],
     educationalContent: {
-      howItWorks:
-        'Simulates crawler requests from Googlebot Smartphone, Bingbot, GPTBot, and Applebot to evaluate HTTP/2 server response headers, compression algorithms, and indexing control headers.',
-      formulaMethodology:
-        'X-Robots-Tag HTTP headers take precedence over HTML meta robots tags when crawling non-HTML assets (PDFs, images) or verifying server-level indexing permissions.',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Select Target Bot User-Agent',
-          stepDescription: 'Choose between Googlebot Mobile, Desktop, Bingbot, GPTBot, or Applebot.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Configure Simulated Directives',
-          stepDescription: 'Toggle X-Robots-Tag, HSTS Preload, and Content Security Policy headers.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Analyze Raw Wire Stream',
-          stepDescription: 'Verify HTTP status codes and cache-control directives for optimal crawl efficiency.',
-        },
-      ],
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
     },
     faqs: [
       {
-        id: 'faq_1',
-        question: 'What is the advantage of X-Robots-Tag over HTML meta robots?',
-        answer:
-          'X-Robots-Tag headers can be applied to non-HTML files such as PDFs, images, and API endpoints, allowing webmasters to prevent indexation of media without parsing DOM trees.',
+        id: 'faq_redir_1',
+        question: 'What is a 301 redirect?',
+        answer: 'A 301 tells clients and search engines that a URL has moved permanently to another location.',
+      },
+      {
+        id: 'faq_redir_2',
+        question: 'What is a redirect chain?',
+        answer: 'A redirect chain happens when one URL redirects to another URL, which redirects again before reaching the final page.',
+      },
+      {
+        id: 'faq_redir_3',
+        question: 'Are redirect chains bad for SEO?',
+        answer: 'Long or unnecessary chains can add latency and make crawling less efficient. Google recommends redirecting directly to the final destination when possible.',
+      },
+      {
+        id: 'faq_redir_4',
+        question: 'What is the difference between 301 and 302?',
+        answer: 'A 301 indicates a permanent move, while a 302 indicates a temporary redirect. Google treats them differently when determining which URL should be canonical.',
+      },
+      {
+        id: 'faq_redir_5',
+        question: 'What does 200 OK mean?',
+        answer: 'It means the server successfully returned the requested resource.',
+      },
+      {
+        id: 'faq_redir_6',
+        question: 'What does 404 mean?',
+        answer: 'A 404 means the requested resource could not be found.',
+      },
+      {
+        id: 'faq_redir_7',
+        question: 'What should I do if a redirect ends in 404?',
+        answer: 'Check the redirect rule and make sure the destination URL exists and is the intended replacement.',
       },
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Googlebot HTTP Header Inspector & AI Crawler Sandbox | Veritas SEO',
-        'Inspect server response headers, X-Robots-Tag, and bot user-agent rendering for technical SEO audits.',
+        'Googlebot & AI Crawler HTTP Header Inspector',
+        'Test how your server responds to Googlebot, GPTBot, ClaudeBot, and other AI crawlers. Inspect HTTP status codes, X-Robots-Tag headers, and bot directives instantly.',
         'https://veritas-seo.dev/tool/bot-header-inspector'
       ),
       focusKeyword: 'googlebot http header inspector',
@@ -580,41 +941,66 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 95,
     engineType: 'social-card-studio',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Simulates social feed link unfurling across X (Twitter), Facebook, LinkedIn, Discord, and Slack to optimize visual aspect ratios and prevent truncated headline titles.',
-      formulaMethodology:
-        'Standard Open Graph image dimensions require 1200×630 pixels with an exact 1.91:1 aspect ratio. Social titles should remain between 30 and 60 characters for complete visibility.',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Specify Target Destination URL',
-          stepDescription: 'Input the canonical web address where social clicks should land.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Customize Title, Summary & Image',
-          stepDescription: 'Provide engaging copy and a high-resolution 1200×630px image URL.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Preview & Copy <meta> Tags',
-          stepDescription: 'Inspect real-time feed cards and copy standard Open Graph HTML tags into your website <head>.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'What is the recommended size for og:image tags?',
-        answer:
-          '1200×630 pixels (1.91:1 ratio) is the universal standard for Facebook, LinkedIn, X / Twitter Large Cards, Discord, and Slack unfurls.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
-        'Open Graph & Twitter Card Studio | Veritas SEO',
-        'Preview and generate Open Graph and Twitter Card tags for Facebook, LinkedIn, Discord, and X.',
+        'Free Open Graph & Twitter Card Generator & Preview Tool',
+        'Free Open Graph and Twitter Card generator. Test social previews, fix relative image paths, eliminate duplicate tags, and copy clean header markup instantly.',
         'https://veritas-seo.dev/tool/social-card-studio'
       ),
       focusKeyword: 'open graph social card generator',
@@ -637,37 +1023,62 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 89,
     engineType: 'robots-sitemap-validator',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Evaluates standard REP (Robots Exclusion Protocol) longest-match precedence rules for Googlebot, Bingbot, and AI crawlers against your target URL paths.',
-      formulaMethodology:
-        'Google follows longest-path specificity when resolving conflicting Allow and Disallow directives based on character byte length.',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Paste or Edit Robots.txt Rules',
-          stepDescription: 'Configure User-agent blocks, Allow/Disallow rules, and Sitemap URLs.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Enter Test URL Path',
-          stepDescription: 'Specify the relative path you want to test against crawler directives.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Verify Crawl Eligibility',
-          stepDescription: 'Check whether the target crawler is allowed or blocked and export your validated robots.txt file.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'Does robots.txt prevent a URL from being indexed in Google?',
-        answer:
-          'No. Blocking a URL in robots.txt prevents crawling, but if external pages link to that URL, Google may still index the URL without page content. Use a noindex meta tag or X-Robots-Tag to guarantee de-indexation.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
         'Robots.txt & XML Sitemap Directive Validator | Veritas SEO',
@@ -694,37 +1105,62 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 112,
     engineType: 'onpage-audit-scorer',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Audits your page title, meta description, canonical URL, heading hierarchy, and body copy against weighted technical SEO ranking signals.',
-      formulaMethodology:
-        'Calculates a weighted 0–100 Technical SEO Health Score across Title Optimization (25%), Meta & Canonical Setup (25%), Heading Semantics (25%), and Keyword Relevance (25%).',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Enter Target Keyword & Meta Tags',
-          stepDescription: 'Input your primary focus keyword, title tag, and meta description.',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Provide Heading & Body Content',
-          stepDescription: 'Paste your H1 headline and body content to evaluate semantic alignment.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Resolve Flagged Warnings',
-          stepDescription: 'Follow the prioritized recommendations to achieve a 90+ SEO Audit Score.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'Where should the primary focus keyword appear on a page?',
-        answer:
-          'For optimal semantic signaling, include your primary keyword in the <title> tag, the URL slug, the primary <h1> heading, and within the first 100 words of body copy.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
         'On-Page Technical SEO Audit Scorer | Veritas SEO',
@@ -751,37 +1187,62 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 64,
     engineType: 'cwv-cls-calculator',
     defaultInputConfig: createDefaultToolInputConfig(),
-    educationalContent: {
-      howItWorks:
-        'Measures visual stability by multiplying the viewport Impact Fraction by the Distance Fraction for shifting DOM elements during page load.',
-      formulaMethodology:
-        'CLS Score = Impact Fraction × Distance Fraction. Google Core Web Vitals thresholds: Good (≤ 0.10), Needs Improvement (0.10 – 0.25), Poor (> 0.25).',
-      stepByStepGuide: [
-        {
-          id: 'step_1',
-          stepTitle: 'Set Viewport Dimensions',
-          stepDescription: 'Configure device viewport height and width (e.g. Desktop 1920×1080 or Mobile 390×844).',
-        },
-        {
-          id: 'step_2',
-          stepTitle: 'Input Element Size & Shift Distance',
-          stepDescription: 'Specify the unstable element height and how many pixels it shifted vertically.',
-        },
-        {
-          id: 'step_3',
-          stepTitle: 'Inspect CLS Pass/Fail Status',
-          stepDescription: 'Verify that your calculated CLS score stays below Google’s 0.10 threshold.',
-        },
-      ],
-    },
-    faqs: [
+    sections: [
       {
-        id: 'faq_1',
-        question: 'What is the most common cause of high CLS scores?',
-        answer:
-          'Images, embeds, and ad containers without explicit width and height attributes (or CSS aspect-ratio boxes), as well as late-loading web fonts causing FOUT/FOIT.',
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
       },
     ],
+    educationalContent: {
+      howItWorks: '',
+      formulaMethodology: '',
+      stepByStepGuide: [],
+    },
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
         'Core Web Vitals & CLS Layout Shift Calculator | Veritas SEO',
@@ -846,6 +1307,120 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
         'https://veritas-seo.dev/tool/readability-flesch-analyzer'
       ),
       focusKeyword: 'flesch kincaid readability calculator',
+    },
+    createdAt: PRESET_TIMESTAMP,
+    updatedAt: PRESET_TIMESTAMP,
+  },
+  {
+    id: 'tool_compress_pdf',
+    title: 'Compress PDF - Online PDF File Size Reducer',
+    slug: 'compress-pdf',
+    shortSummary:
+      'Compress PDF documents online without quality loss. Optimize PDF file size for fast web loading, mobile downloads, and Googlebot crawl budget.',
+    icon: 'FileDown',
+    badge: 'New',
+    categoryId: 'cat_technical_seo',
+    subCategoryId: 'subcat_crawl_directives',
+    status: 'published',
+    isActive: true,
+    displayOrder: 13,
+    usageCount: 142,
+    engineType: 'compress-pdf',
+    defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
+      },
+    ],
+    educationalContent: {
+      howItWorks:
+        'Analyzes PDF object dictionaries, cross-reference tables, and font streams to eliminate redundant bytes and compress stream structures while preserving vector typography sharpness.',
+      formulaMethodology:
+        'Size Reduction % = ((Original Bytes − Compressed Bytes) / Original Bytes) × 100. Stream compaction strips non-essential metadata and compacts cross-reference tables.',
+      stepByStepGuide: [
+        {
+          id: 'step_1',
+          stepTitle: 'Upload or Drag & Drop PDF',
+          stepDescription: 'Select any standard PDF document from your device or test with an instant preset sample.',
+        },
+        {
+          id: 'step_2',
+          stepTitle: 'Choose Compression Preset',
+          stepDescription: 'Select between Extreme (~78% reduction), Recommended (~62% reduction), or Low Compression.',
+        },
+        {
+          id: 'step_3',
+          stepTitle: 'Download Optimized Document',
+          stepDescription: 'Save your compressed PDF file instantly with stripped metadata and optimized web performance.',
+        },
+      ],
+    },
+    faqs: [
+      {
+        id: 'faq_pdf_1',
+        question: 'How does in-browser PDF compression work?',
+        answer:
+          'PDF compression removes redundant data streams, compacts font subsets, reorganizes cross-reference tables, and strips unnecessary metadata directly inside your browser.',
+      },
+      {
+        id: 'faq_pdf_2',
+        question: 'Why does PDF file size matter for Googlebot and SEO?',
+        answer:
+          'Google crawls and indexes PDFs just like HTML pages. Heavy PDFs consume excessive crawl budget and cause mobile download delays.',
+      },
+    ],
+    seo: {
+      ...createDefaultSeoMetadata(
+        'Compress PDF Online - Free PDF File Size Reducer & Optimizer | Veritas SEO',
+        'Compress and optimize PDF file sizes directly in your browser. Reduce document weight for faster downloads, better mobile UX, and crawl budget efficiency.',
+        'https://veritas-seo.dev/tool/compress-pdf'
+      ),
+      focusKeyword: 'compress pdf online',
     },
     createdAt: PRESET_TIMESTAMP,
     updatedAt: PRESET_TIMESTAMP,

@@ -28,6 +28,7 @@ import {
   Bot,
   Folder,
   HelpCircle,
+  FileDown,
 } from 'lucide-react';
 
 interface IconRendererProps {
@@ -64,6 +65,7 @@ const ICONS_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
   Bot,
   Folder,
   HelpCircle,
+  FileDown,
 };
 
 export const IconRenderer: React.FC<IconRendererProps> = ({ name, className = 'w-5 h-5' }) => {

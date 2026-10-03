@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { calculateKeywordDensity } from '../../lib/seo-math';
 import type { SeoTool } from '../../lib/schemas';
-import { Sparkles, AlertTriangle, CheckCircle2, Sliders, Type, Download, } from 'lucide-react';
-import { AnalyzerGuide } from './AnalyzerGuide';
+import { Sparkles, AlertTriangle, CheckCircle2, Sliders, Type, Download } from 'lucide-react';
 
 interface Props {
   tool: SeoTool;
@@ -383,8 +382,6 @@ export const KeywordDensityAnalyzerEngine: React.FC<Props> = ({ tool, onPerformC
           })()}
         </div>
       </div>
-      
-      <AnalyzerGuide />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { SeoTool } from '../../lib/schemas';
 import { Terminal, CheckCircle2, XCircle, Play, FileCode, Check } from 'lucide-react';
+import { RobotsSitemapValidatorGuide } from './RobotsSitemapValidatorGuide';
 
 interface Props {
   tool: SeoTool;
@@ -50,7 +51,7 @@ export const RobotsSitemapValidatorEngine: React.FC<Props> = ({ onPerformCalcula
   };
 
   return (
-    <div className="space-y-8">
+    <div id="validator" className="space-y-12 scroll-mt-24">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Editor */}
         <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs space-y-4">
@@ -134,6 +135,9 @@ export const RobotsSitemapValidatorEngine: React.FC<Props> = ({ onPerformCalcula
           )}
         </div>
       </div>
+
+      {/* Comprehensive Guide */}
+      <RobotsSitemapValidatorGuide />
     </div>
   );
 };

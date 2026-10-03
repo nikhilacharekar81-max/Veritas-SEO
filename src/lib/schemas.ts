@@ -112,6 +112,34 @@ export const EducationalContentSchema = z.object({
 export type EducationalContent = z.infer<typeof EducationalContentSchema>;
 
 /**
+ * Tool Section Schema for Dynamic Section Management (Edit, Delete, Enable, Disable, Reorder)
+ */
+export const ToolSectionTypeSchema = z.enum([
+  'hero_header',
+  'interactive_engine',
+  'educational_methodology',
+  'step_tutorial',
+  'faq_accordion',
+  'related_tools',
+  'custom_content',
+]);
+
+export type ToolSectionType = z.infer<typeof ToolSectionTypeSchema>;
+
+export const ToolSectionSchema = z.object({
+  id: z.string().min(1),
+  title: z.string(),
+  subtitle: z.string().optional(),
+  type: ToolSectionTypeSchema,
+  isEnabled: z.boolean().default(true),
+  displayOrder: z.number().int().default(0),
+  content: z.string().optional(),
+  config: z.record(z.string(), z.any()).optional(),
+});
+
+export type ToolSection = z.infer<typeof ToolSectionSchema>;
+
+/**
  * Interactive SEO Tool Engine Types
  */
 export const ToolEngineTypeSchema = z.enum([
@@ -127,6 +155,7 @@ export const ToolEngineTypeSchema = z.enum([
   'serp-rank-calculator',
   'bot-header-inspector',
   'social-card-studio',
+  'compress-pdf',
 ]);
 
 export type ToolEngineType = z.infer<typeof ToolEngineTypeSchema>;
@@ -177,6 +206,7 @@ export const SeoToolSchema = z.object({
   defaultInputConfig: ToolDefaultInputConfigSchema,
   educationalContent: EducationalContentSchema,
   faqs: z.array(FaqItemSchema),
+  sections: z.array(ToolSectionSchema).optional(),
   seo: SeoMetadataSchema,
   createdAt: z.string(),
   updatedAt: z.string(),

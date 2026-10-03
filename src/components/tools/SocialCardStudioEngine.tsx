@@ -14,6 +14,7 @@ import {
   Layers,
   Info,
 } from 'lucide-react';
+import { SocialCardStudioGuide } from './SocialCardStudioGuide';
 
 interface Props {
   tool: SeoTool;
@@ -293,6 +294,9 @@ export const SocialCardStudioEngine: React.FC<Props> = ({ onPerformCalculation }
           <code>{generateMetaHtml()}</code>
         </pre>
       </div>
+
+      {/* COMPREHENSIVE SOCIAL CARD GUIDE */}
+      <SocialCardStudioGuide />
     </div>
   );
 };

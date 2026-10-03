@@ -4,9 +4,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
-  experimental: {
-    optimizePackageImports: ['lucide-react', 'recharts'],
-  },
   async redirects() {
     return [
       {
@@ -17,11 +14,6 @@ const nextConfig = {
       {
         source: '/keyword-density-analyzer',
         destination: '/tool/keyword-density-analyzer',
-        permanent: true,
-      },
-      {
-        source: '/schema-jsonld-generator',
-        destination: '/tool/schema-jsonld-builder',
         permanent: true,
       },
     ];

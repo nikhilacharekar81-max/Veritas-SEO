@@ -350,9 +350,114 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           );
 
           const keywordPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_keyword_density');
+          const serpPixelPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_serp_pixel');
+          const schemaPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_schema_jsonld');
+          const redirectPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_redirect_inspector');
+          const botHeadersPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_bot_headers');
+          const hreflangPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_hreflang_matrix');
+          const ctrForecasterPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_ctr_forecaster');
+          const socialCardsPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_social_cards');
+          const robotsPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_robots_validator');
+          const onpagePreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_onpage_scorer');
+          const cwvPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_cwv_cls');
+          const serpMigrated = localStorage.getItem('veritas_seo_serp_pixel_v6');
+          const schemaGuideMigrated = localStorage.getItem('veritas_seo_schema_guide_v5');
+          const redirectCleanMigrated = localStorage.getItem('veritas_seo_redirect_clean_v1');
+          const botHeadersCleanMigrated = localStorage.getItem('veritas_seo_bot_headers_meta_v2');
+          const hreflangCleanMigrated = localStorage.getItem('veritas_seo_hreflang_clean_v1');
+          const ctrForecasterCleanMigrated = localStorage.getItem('veritas_seo_ctr_meta_v2');
+          const socialMetaMigrated = localStorage.getItem('veritas_seo_social_meta_v3');
+          const robotsCleanMigrated = localStorage.getItem('veritas_seo_robots_clean_v1');
+          const onpageCleanMigrated = localStorage.getItem('veritas_seo_onpage_clean_v1');
+          const cwvCleanMigrated = localStorage.getItem('veritas_seo_cwv_clean_v1');
           const mergedTools = [...parsedTools, ...missingPresetTools].map((t) => {
             const fixedSubCat =
               t.subCategoryId === 'subcat_serp_simulators' ? 'subcat_serp_preview' : t.subCategoryId;
+            if (!cwvCleanMigrated && (t.id === 'tool_cwv_cls' || t.slug === 'cwv-cls-calculator' || t.engineType === 'cwv-cls-calculator') && cwvPreset) {
+              return {
+                ...t,
+                sections: cwvPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+              };
+            }
+            if (!onpageCleanMigrated && (t.id === 'tool_onpage_scorer' || t.slug === 'onpage-audit-scorer' || t.engineType === 'onpage-audit-scorer') && onpagePreset) {
+              return {
+                ...t,
+                sections: onpagePreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+              };
+            }
+            if (!robotsCleanMigrated && (t.id === 'tool_robots_validator' || t.slug === 'robots-sitemap-validator' || t.engineType === 'robots-sitemap-validator') && robotsPreset) {
+              return {
+                ...t,
+                sections: robotsPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+              };
+            }
+            if (!socialMetaMigrated && (t.id === 'tool_social_cards' || t.slug === 'social-card-studio' || t.engineType === 'social-card-studio') && socialCardsPreset) {
+              return {
+                ...t,
+                sections: socialCardsPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+                seo: socialCardsPreset.seo,
+              };
+            }
+            if (!ctrForecasterCleanMigrated && (t.id === 'tool_ctr_forecaster' || t.slug === 'serp-ctr-forecaster' || t.engineType === 'serp-rank-calculator') && ctrForecasterPreset) {
+              return {
+                ...t,
+                sections: ctrForecasterPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+                seo: ctrForecasterPreset.seo,
+              };
+            }
+            if (!hreflangCleanMigrated && (t.id === 'tool_hreflang_matrix' || t.slug === 'hreflang-tag-matrix' || t.engineType === 'hreflang-tag-matrix') && hreflangPreset) {
+              return {
+                ...t,
+                sections: hreflangPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+              };
+            }
+            if (!botHeadersCleanMigrated && (t.id === 'tool_bot_headers' || t.slug === 'bot-header-inspector' || t.engineType === 'bot-header-inspector') && botHeadersPreset) {
+              return {
+                ...t,
+                sections: botHeadersPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: [],
+                seo: botHeadersPreset.seo,
+              };
+            }
+            if (!redirectCleanMigrated && (t.id === 'tool_redirect_inspector' || t.slug === 'redirect-chain-inspector' || t.engineType === 'redirect-chain-inspector') && redirectPreset) {
+              return {
+                ...t,
+                sections: redirectPreset.sections,
+                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                faqs: redirectPreset.faqs,
+              };
+            }
+            if (!schemaGuideMigrated && (t.id === 'tool_schema_jsonld' || t.slug === 'schema-jsonld-generator' || t.engineType === 'schema-jsonld-generator') && schemaPreset) {
+              return {
+                ...t,
+                sections: schemaPreset.sections,
+                educationalContent: schemaPreset.educationalContent,
+                faqs: schemaPreset.faqs,
+                seo: schemaPreset.seo,
+              };
+            }
+            if (!serpMigrated && t.id === 'tool_serp_pixel' && serpPixelPreset) {
+              return {
+                ...t,
+                subCategoryId: fixedSubCat,
+                educationalContent: serpPixelPreset.educationalContent,
+                faqs: serpPixelPreset.faqs,
+                seo: serpPixelPreset.seo,
+              };
+            }
             if (!blueprintMigrated && t.id === 'tool_keyword_density' && keywordPreset) {
               return {
                 ...t,
@@ -372,9 +477,28 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
           setTools(mergedTools);
           localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
+          localStorage.setItem('veritas_seo_serp_pixel_v6', 'true');
+          localStorage.setItem('veritas_seo_schema_guide_v5', 'true');
+          localStorage.setItem('veritas_seo_redirect_clean_v1', 'true');
+          localStorage.setItem('veritas_seo_bot_headers_meta_v2', 'true');
+          localStorage.setItem('veritas_seo_hreflang_clean_v1', 'true');
+          localStorage.setItem('veritas_seo_ctr_meta_v2', 'true');
+          localStorage.setItem('veritas_seo_social_meta_v3', 'true');
+          localStorage.setItem('veritas_seo_robots_clean_v1', 'true');
+          localStorage.setItem('veritas_seo_onpage_clean_v1', 'true');
+          localStorage.setItem('veritas_seo_cwv_clean_v1', 'true');
         }
       } else {
         localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
+        localStorage.setItem('veritas_seo_schema_guide_v5', 'true');
+        localStorage.setItem('veritas_seo_redirect_clean_v1', 'true');
+        localStorage.setItem('veritas_seo_bot_headers_meta_v2', 'true');
+        localStorage.setItem('veritas_seo_hreflang_clean_v1', 'true');
+        localStorage.setItem('veritas_seo_ctr_meta_v2', 'true');
+        localStorage.setItem('veritas_seo_social_meta_v3', 'true');
+        localStorage.setItem('veritas_seo_robots_clean_v1', 'true');
+        localStorage.setItem('veritas_seo_onpage_clean_v1', 'true');
+        localStorage.setItem('veritas_seo_cwv_clean_v1', 'true');
       }
 
       const savedRedir = localStorage.getItem(STORAGE_KEYS.REDIRECTS);

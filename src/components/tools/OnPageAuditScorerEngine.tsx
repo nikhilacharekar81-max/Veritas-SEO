@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { SeoTool } from '../../lib/schemas';
 import { evaluateOnPageSeoHealth } from '../../lib/seo-math';
 import { ShieldCheck, AlertCircle, CheckCircle, Info, Sparkles, RefreshCw } from 'lucide-react';
+import { OnPageAuditScorerGuide } from './OnPageAuditScorerGuide';
 
 interface Props {
   tool: SeoTool;
@@ -28,7 +29,7 @@ export const OnPageAuditScorerEngine: React.FC<Props> = () => {
   });
 
   return (
-    <div className="space-y-8">
+    <div id="validator" className="space-y-12 scroll-mt-24">
       {/* Top Score Banner */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex items-center gap-5">
@@ -169,6 +170,9 @@ export const OnPageAuditScorerEngine: React.FC<Props> = () => {
           </div>
         </div>
       </div>
+
+      {/* Comprehensive Guide */}
+      <OnPageAuditScorerGuide />
     </div>
   );
 };

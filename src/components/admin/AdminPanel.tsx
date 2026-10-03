@@ -60,7 +60,7 @@ export const AdminPanel: React.FC<Props> = ({
   initialEditBlogPostId = null,
 }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>(initialTab);
-  const { categories, subCategories, tools, redirects, toolUsageEvents, blogPosts } = useCms();
+  const { categories, subCategories, tools, redirects, toolUsageEvents, blogPosts, contentBlocks } = useCms();
 
   // Controlled modal triggers across tabs
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
@@ -91,7 +91,7 @@ export const AdminPanel: React.FC<Props> = ({
     { id: 'health', label: 'Health Auditor', icon: <ShieldCheck className="w-4 h-4" /> },
     { id: 'link_equity', label: 'Link Equity Flow', icon: <Network className="w-4 h-4" /> },
     { id: 'robots_sitemap', label: 'Robots & Sitemap', icon: <Bot className="w-4 h-4" /> },
-    { id: 'content', label: 'Content Manager', icon: <Sparkles className="w-4 h-4" /> },
+    { id: 'content', label: 'Content Manager', icon: <Sparkles className="w-4 h-4" />, badge: contentBlocks.length },
     { id: 'audit', label: 'Audit Log', icon: <History className="w-4 h-4" /> },
     { id: 'backup', label: 'Backup & Restore', icon: <Database className="w-4 h-4" /> },
   ];

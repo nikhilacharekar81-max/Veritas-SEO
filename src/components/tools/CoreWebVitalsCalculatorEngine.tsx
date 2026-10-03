@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { SeoTool } from '../../lib/schemas';
 import Decimal from 'decimal.js';
 import { Gauge, Zap, Layout, Clock, Sparkles } from 'lucide-react';
+import { CoreWebVitalsGuide } from './CoreWebVitalsGuide';
 
 interface Props {
   tool: SeoTool;
@@ -46,7 +47,7 @@ export const CoreWebVitalsCalculatorEngine: React.FC<Props> = () => {
   const inpStatus = getInpStatus(inpMs);
 
   return (
-    <div className="space-y-8">
+    <div id="validator" className="space-y-12 scroll-mt-24">
       {/* CWV Scorecards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* CLS */}
@@ -179,6 +180,9 @@ export const CoreWebVitalsCalculatorEngine: React.FC<Props> = () => {
           </div>
         </div>
       </div>
+
+      {/* Comprehensive Guide */}
+      <CoreWebVitalsGuide />
     </div>
   );
 };

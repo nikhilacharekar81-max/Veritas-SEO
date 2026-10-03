@@ -9,12 +9,22 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://veritas-seo.dev',
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: 'Veritas SEO | Technical SEO Engine',
+    title: 'Veritas SEO | Technical SEO Engine & Taxonomy Architecture',
     description:
       'Automated 301 redirect protection, schema-dts structured data, and dynamic category silos.',
     url: 'https://veritas-seo.dev',
     type: 'website',
+    siteName: 'Veritas SEO',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Veritas SEO | Technical SEO Engine',
+    description: 'Precision technical SEO calculators and taxonomy management suite.',
   },
 };
 

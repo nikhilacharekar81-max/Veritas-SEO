@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import type { SeoTool } from '../../lib/schemas';
 import { GitFork, ArrowDown, AlertTriangle, CheckCircle2, ShieldAlert, Sparkles, RefreshCw } from 'lucide-react';
+import { RedirectChainInspectorGuide } from './RedirectChainInspectorGuide';
+import { HreflangMatrixGuide } from './HreflangMatrixGuide';
 
 interface Props {
   tool: SeoTool;
@@ -219,6 +221,14 @@ export const RedirectChainInspectorEngine: React.FC<Props> = ({ onPerformCalcula
             </div>
           </div>
         )}
+      </div>
+
+      {/* COMPREHENSIVE REDIRECT & STATUS CODE GUIDE */}
+      <div className="w-full h-auto pt-8 border-t border-slate-200/80 space-y-10">
+        <HreflangMatrixGuide />
+        <div className="pt-8 border-t border-slate-200/80">
+          <RedirectChainInspectorGuide />
+        </div>
       </div>
     </div>
   );

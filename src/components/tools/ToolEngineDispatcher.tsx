@@ -13,6 +13,7 @@ import { HreflangMatrixEngine } from './HreflangMatrixEngine';
 import { SerpRankCtrCalculatorEngine } from './SerpRankCtrCalculatorEngine';
 import { BotHeaderSimulatorEngine } from './BotHeaderSimulatorEngine';
 import { SocialCardStudioEngine } from './SocialCardStudioEngine';
+import { CompressPdfEngine } from './CompressPdfEngine';
 
 interface Props {
   tool: SeoTool;
@@ -61,6 +62,8 @@ export const ToolEngineDispatcher: React.FC<Props> = ({ tool, onCalculationPerfo
       return <BotHeaderSimulatorEngine tool={tool} onPerformCalculation={handleCalculation} />;
     case 'social-card-studio':
       return <SocialCardStudioEngine tool={tool} onPerformCalculation={handleCalculation} />;
+    case 'compress-pdf':
+      return <CompressPdfEngine tool={tool} onPerformCalculation={handleCalculation} />;
     default:
       return <SerpPixelSimulatorEngine tool={tool} onPerformCalculation={handleCalculation} />;
   }
