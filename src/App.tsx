@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/navigation';
 import { useCms } from './lib/store';
 import { Header } from './components/public/Header';
 import { HeroSection } from './components/public/HeroSection';
@@ -9,6 +10,8 @@ import { PublicCategoryHub } from './components/public/PublicCategoryHub';
 import { PublicSubCategoryHub } from './components/public/PublicSubCategoryHub';
 import { Footer } from './components/public/Footer';
 import type { AdminTab } from './components/admin/AdminPanel';
+
+// ... (rest of dynamic imports)
 
 // Code-split heavy views so initial homepage bundle is super fast & lightweight
 const AdminPanel = dynamic(
@@ -78,6 +81,7 @@ const AppContent: React.FC<AppProps> = ({
   initialRoute = { type: 'home' },
   initialViewMode = 'public',
 }) => {
+  const router = useRouter();
   const { checkRedirect, publicCategories, publicSubCategories } = useCms();
 
   const [viewMode, setViewMode] = useState<ViewMode>(initialViewMode);
@@ -203,7 +207,7 @@ const AppContent: React.FC<AppProps> = ({
 
   const pushUrl = (path: string) => {
     if (typeof window !== 'undefined' && window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
+      router.push(path);
     }
   };
 
