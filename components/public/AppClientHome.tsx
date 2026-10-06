@@ -1,8 +1,19 @@
 'use client';
 
 import React from 'react';
-import App from '../../src/App';
+import { useRouter } from 'next/navigation';
+import { HeroSection } from '../../src/components/public/HeroSection';
+import { useCms } from '../../src/lib/store';
 
 export const AppClientHome: React.FC = () => {
-  return <App />;
+  const router = useRouter();
+  const { setViewMode } = useCms();
+  return (
+    <HeroSection 
+      onOpenAdmin={() => {
+        setViewMode('admin');
+        router.push('/admin');
+      }}
+    />
+  );
 };

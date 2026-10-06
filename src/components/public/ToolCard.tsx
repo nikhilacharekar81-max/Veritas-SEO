@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import type { SeoTool } from '../../lib/schemas';
 import { useCms } from '../../lib/store';
 import { IconRenderer } from '../ui/IconRenderer';
@@ -7,18 +8,18 @@ import { ArrowRight } from 'lucide-react';
 
 interface Props {
   tool: SeoTool;
-  onSelect: (slug: string) => void;
+  onSelect?: (slug: string) => void;
 }
 
-export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
+export const ToolCard: React.FC<Props> = ({ tool }) => {
   const { publicCategories, publicSubCategories, updateTool } = useCms();
   const parentCat = publicCategories.find((c) => c.id === tool.categoryId);
   const parentSub = publicSubCategories.find((s) => s.id === tool.subCategoryId);
 
   return (
-    <article
-      onClick={() => onSelect(tool.slug)}
-      className="bg-white rounded-2xl border border-slate-200/80 p-6 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all duration-200 cursor-pointer group relative overflow-hidden"
+    <Link
+      href={`/tool/${tool.slug}`}
+      className="bg-white rounded-2xl border border-slate-200/80 p-6 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all duration-200 cursor-pointer group relative overflow-hidden h-full"
     >
       {/* Top bar with Icon & Badge */}
       <div className="space-y-4">
@@ -90,6 +91,6 @@ export const ToolCard: React.FC<Props> = ({ tool, onSelect }) => {
           Open Engine <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
         </span>
       </div>
-    </article>
+    </Link>
   );
 };

@@ -69,6 +69,25 @@ export const DEMO_PRESET_CATEGORIES: MainCategory[] = [
     createdAt: PRESET_TIMESTAMP,
     updatedAt: PRESET_TIMESTAMP,
   },
+  {
+    id: 'cat_creator_tools',
+    name: 'Creator Tools',
+    slug: 'creator-tools',
+    description: 'Precision calculators and decision tools for YouTubers, influencers, and digital creators.',
+    icon: 'Sparkles',
+    displayOrder: 4,
+    isActive: true,
+    seo: {
+      ...createDefaultSeoMetadata(
+        'Creator Tools & YouTube Monetization Calculators | Veritas SEO',
+        'Calculate YouTube revenue, estimate Shorts RPM, plan income milestones, and model channel growth scenarios with free precision tools.',
+        'https://veritas-seo.dev/category/creator-tools'
+      ),
+      focusKeyword: 'creator tools',
+    },
+    createdAt: PRESET_TIMESTAMP,
+    updatedAt: PRESET_TIMESTAMP,
+  },
 ];
 
 export const DEMO_PRESET_SUBCATEGORIES: SubCategory[] = [
@@ -128,6 +147,21 @@ export const DEMO_PRESET_SUBCATEGORIES: SubCategory[] = [
     seo: createDefaultSeoMetadata(
       'Interactive Schema.org JSON-LD Generators | Veritas SEO',
       'Create and validate WebApplication, FAQPage, and BreadcrumbList structured data for search rich snippets.'
+    ),
+    createdAt: PRESET_TIMESTAMP,
+    updatedAt: PRESET_TIMESTAMP,
+  },
+  {
+    id: 'subcat_youtube_creator',
+    categoryId: 'cat_creator_tools',
+    name: 'YouTube Creator Tools',
+    slug: 'youtube-creator-tools',
+    description: 'Revenue calculators, RPM analyzers, and upload velocity planners for YouTube creators.',
+    displayOrder: 1,
+    isActive: true,
+    seo: createDefaultSeoMetadata(
+      'YouTube Creator Tools & Monetization Calculators | Veritas SEO',
+      'Calculate YouTube ad revenue, hybrid Shorts blended RPM, and required view goals for channels.'
     ),
     createdAt: PRESET_TIMESTAMP,
     updatedAt: PRESET_TIMESTAMP,
@@ -268,8 +302,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Google SERP Pixel Width Simulator & Meta Previewer | Veritas SEO',
-        'Test Google Desktop and Mobile title and meta description pixel widths with zero layout truncation. Free real-time SERP simulator.',
+        'Google SERP Pixel Width Simulator | Title & Meta Check',
+        'Test title and description lengths in pixels with our free Google SERP Simulator. Prevent truncation in search results and optimize click-through rates.',
         'https://veritas-seo.dev/tool/serp-pixel-simulator'
       ),
       focusKeyword: 'serp pixel width simulator',
@@ -343,8 +377,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Free Keyword Density & N-Gram Analyzer | Real-Time SEO Tool',
-        'Analyze text frequency, unigrams, bigrams, and trigrams in real-time. Check keyword placement, lexical diversity, and prevent over-optimization for free.',
+        'Keyword Density & N-Gram Analyzer | Free SEO Tool',
+        'Analyze keyword density, frequency, and N-grams instantly. Optimize content relevance, prevent keyword stuffing, and improve on-page SEO.',
         'https://veritas-seo.dev/tool/keyword-density-analyzer'
       ),
       focusKeyword: 'keyword density analyzer',
@@ -517,8 +551,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Free Schema.org JSON-LD Generator & Structured Data Builder',
-        'Create valid JSON-LD structured data instantly. Select your schema type, fill in real page details, preview code live, and copy clean markup for your website.',
+        'Schema.org JSON-LD Generator | Free Structured Data Tool',
+        'Build valid JSON-LD schema markup easily. Generate schema for articles, products, FAQs, and local businesses to boost rich snippets in Google SERPs.',
         'https://veritas-seo.dev/tool/schema-jsonld-generator'
       ),
       focusKeyword: 'schema json-ld generator',
@@ -635,8 +669,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'HTTP Status & 301 Redirect Chain Inspector | Veritas SEO',
-        'Inspect multi-hop 301 and 302 redirect chains, detect loops, and eliminate latency bottlenecks.',
+        'HTTP Status & 301 Redirect Chain Inspector | Free Tool',
+        'Trace 301 redirect chains, inspect HTTP status codes, and fix broken URLs instantly. Optimize site architecture and crawl efficiency.',
         'https://veritas-seo.dev/tool/redirect-chain-inspector'
       ),
       focusKeyword: '301 redirect chain inspector',
@@ -717,8 +751,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
-        'Hreflang Tag Matrix & Multi-Region SEO Validator | Veritas SEO',
-        'Generate and validate bidirectional hreflang tags with x-default fallbacks and ISO language-region compliance.',
+        'Hreflang Tag Generator & International SEO Validator',
+        'Validate hreflang tags, check multi-language setups, and fix regional targeting errors. Ensure search engines serve the right language version.',
         'https://veritas-seo.dev/tool/hreflang-tag-matrix'
       ),
       focusKeyword: 'hreflang tag validator',
@@ -799,8 +833,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
-        'Free SERP CTR Forecaster: Calculate SEO Traffic Potential',
-        'Estimate organic clicks using search volume, ranking position, and realistic CTR benchmarks. Model traffic scenarios and account for modern SERP features.',
+        'Google SERP CTR Forecaster & Traffic Calculator',
+        'Estimate organic search traffic and click-through rates using official Google SERP position curves. Forecast SEO growth and potential clicks.',
         'https://veritas-seo.dev/tool/serp-ctr-forecaster'
       ),
       focusKeyword: 'serp ctr forecaster',
@@ -917,8 +951,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     ],
     seo: {
       ...createDefaultSeoMetadata(
-        'Googlebot & AI Crawler HTTP Header Inspector',
-        'Test how your server responds to Googlebot, GPTBot, ClaudeBot, and other AI crawlers. Inspect HTTP status codes, X-Robots-Tag headers, and bot directives instantly.',
+        'Googlebot & AI Crawler HTTP Header Checker',
+        'Inspect HTTP response headers, user-agent rendering, and status codes for Googlebot, ChatGPT, and other AI web scrapers.',
         'https://veritas-seo.dev/tool/bot-header-inspector'
       ),
       focusKeyword: 'googlebot http header inspector',
@@ -999,8 +1033,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
-        'Free Open Graph & Twitter Card Generator & Preview Tool',
-        'Free Open Graph and Twitter Card generator. Test social previews, fix relative image paths, eliminate duplicate tags, and copy clean header markup instantly.',
+        'Open Graph & Twitter Card Generator & Previewer',
+        'Design, preview, and test Open Graph and Twitter card meta tags. Ensure your shared social links look stunning on Facebook, X, and LinkedIn.',
         'https://veritas-seo.dev/tool/social-card-studio'
       ),
       focusKeyword: 'open graph social card generator',
@@ -1238,9 +1272,37 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
       },
     ],
     educationalContent: {
-      howItWorks: '',
-      formulaMethodology: '',
-      stepByStepGuide: [],
+      howItWorks:
+        "A page can load quickly and still feel bad to use.\n\nYou click a button and it moves. You start reading and an image pushes the text down. An ad appears and the content jumps.\n\nThat's the kind of problem CLS (Cumulative Layout Shift) is meant to measure.\n\nUse the calculator to work with the three Core Web Vitals:\n* CLS for visual stability\n* LCP for loading performance\n* INP for interaction responsiveness\n\nThe CLS calculator lets you change the Impact Fraction and Distance Fraction and see how they affect the layout-shift score. You can also enter LCP and INP values to check them against their recommended thresholds.",
+      formulaMethodology:
+        "Layout Shift Score = Impact Fraction × Distance Fraction\n\nImpact Fraction represents the portion of the viewport affected by the shift. If a large part of the visible page is affected, the impact fraction is larger.\n\nDistance Fraction describes how far the affected content moved compared with the viewport. A small movement produces a smaller value; a larger movement produces a larger value.\n\nGoogle's current thresholds are:\n- 0.10 or less: Good\n- More than 0.10 up to 0.25: Needs Improvement\n- More than 0.25: Poor",
+      stepByStepGuide: [
+        {
+          id: 'step_1',
+          stepTitle: 'Start with the score',
+          stepDescription: 'Find out whether the page is in the Good, Needs Improvement, or Poor range.',
+        },
+        {
+          id: 'step_2',
+          stepTitle: 'Find the shift',
+          stepDescription: 'Use a browser performance tool or field data to identify what actually moved.',
+        },
+        {
+          id: 'step_3',
+          stepTitle: 'Find the cause',
+          stepDescription: 'Determine whether it was an image, ad, font, iframe, dynamic component or something else.',
+        },
+        {
+          id: 'step_4',
+          stepTitle: 'Reserve the space',
+          stepDescription: 'Where appropriate, make the expected dimensions known before the content arrives.',
+        },
+        {
+          id: 'step_5',
+          stepTitle: 'Measure again',
+          stepDescription: "Don't assume a fix worked because the code looks right. Test the page again.",
+        },
+      ],
     },
     faqs: [],
     seo: {
@@ -1258,7 +1320,8 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     id: 'tool_readability_flesch',
     title: 'Flesch-Kincaid Readability Grade Analyzer',
     slug: 'readability-flesch-analyzer',
-    shortSummary: 'Compute Flesch Reading Ease scores, Flesch-Kincaid grade levels, syllable density, and sentence complexity in real time.',
+    shortSummary:
+      'Writing something can be technically correct and still be difficult to read. Calculate Flesch Reading Ease, Flesch-Kincaid Grade Level, and sentence complexity in real time.',
     icon: 'BookOpen',
     badge: 'New',
     categoryId: 'cat_onpage_content',
@@ -1269,37 +1332,82 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     usageCount: 79,
     engineType: 'readability-flesch-analyzer',
     defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: '',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+    ],
     educationalContent: {
       howItWorks:
-        'Analyzes sentence length and syllable-per-word ratios to determine how easy your copy is to read and comprehend for general web audiences.',
+        'Writing something can be technically correct and still be difficult to read. This analyzer gives you a quick way to check that. Paste your text into the tool and it calculates Flesch Reading Ease, Flesch-Kincaid Grade Level, syllable count, word count, sentence count, and other basic readability measurements.',
       formulaMethodology:
-        'Flesch Reading Ease = 206.835 − 1.015 × (Total Words / Total Sentences) − 84.6 × (Total Syllables / Total Words).',
+        'Flesch Reading Ease: 206.835 − 1.015 × (words / sentences) − 84.6 × (syllables / words)\nFlesch-Kincaid Grade Level: 0.39 × (words / sentences) + 11.8 × (syllables / words) − 15.59',
       stepByStepGuide: [
         {
           id: 'step_1',
-          stepTitle: 'Paste Article or Landing Page Copy',
-          stepDescription: 'Insert your text into the readability analyzer.',
+          stepTitle: 'Write normally',
+          stepDescription: "Don't constantly watch the score while drafting.",
         },
         {
           id: 'step_2',
-          stepTitle: 'Check Reading Ease & Grade Level',
-          stepDescription: 'Aim for a Flesch Reading Ease score between 60 and 70 (Grade 7–8 level) for broad web audiences.',
+          stepTitle: 'Run the text through the analyzer',
+          stepDescription: 'Look at the overall score and the supporting numbers.',
         },
         {
           id: 'step_3',
-          stepTitle: 'Shorten Complex Sentences',
-          stepDescription: 'Break up long sentences (>25 words) and replace multi-syllable jargon with clear terminology.',
+          stepTitle: 'Find the difficult parts',
+          stepDescription: 'Look for long sentences, dense paragraphs, unnecessary jargon, and repeated ideas.',
+        },
+        {
+          id: 'step_4',
+          stepTitle: 'Edit the actual writing',
+          stepDescription: 'Split long sentences. Remove words that don\'t add anything. Explain unfamiliar terminology where needed.',
+        },
+        {
+          id: 'step_5',
+          stepTitle: 'Run the text again & read the final version yourself',
+          stepDescription: 'See whether the changes improved the score without making the writing less useful.',
         },
       ],
     },
-    faqs: [
-      {
-        id: 'faq_1',
-        question: 'What is a good Flesch Reading Ease score for SEO content?',
-        answer:
-          'A score between 60 and 70 is considered plain English (8th to 9th grade reading level) and performs best for user engagement and dwell time on web articles.',
-      },
-    ],
+    faqs: [],
     seo: {
       ...createDefaultSeoMetadata(
         'Flesch-Kincaid Readability Grade & Reading Ease Analyzer | Veritas SEO',
@@ -1425,9 +1533,151 @@ export const DEMO_PRESET_TOOLS: SeoTool[] = [
     createdAt: PRESET_TIMESTAMP,
     updatedAt: PRESET_TIMESTAMP,
   },
+  {
+    id: 'tool_youtube_revenue',
+    title: 'YouTube Revenue Calculator',
+    slug: 'youtube-revenue-calculator',
+    shortSummary: 'Calculate YouTube estimated revenue, RPM, Shorts earnings, income goals, and compound growth projections.',
+    icon: 'Youtube',
+    badge: 'New',
+    categoryId: 'cat_creator_tools',
+    subCategoryId: 'subcat_youtube_creator',
+    status: 'published',
+    isActive: true,
+    displayOrder: 14,
+    usageCount: 184,
+    engineType: 'youtube-revenue-calculator',
+    defaultInputConfig: createDefaultToolInputConfig(),
+    sections: [
+      {
+        id: 'sec_hero',
+        title: 'Tool Header & Summary Section',
+        subtitle: 'Tool H1 headline, badge, and short summary',
+        type: 'hero_header',
+        isEnabled: true,
+        displayOrder: 0,
+      },
+      {
+        id: 'sec_engine',
+        title: 'Interactive Tool Execution Engine Canvas',
+        subtitle: 'Primary interactive calculator / simulator inputs and live metrics',
+        type: 'interactive_engine',
+        isEnabled: true,
+        displayOrder: 1,
+      },
+      {
+        id: 'sec_guide',
+        title: 'Technical Execution Guide & Formula Methodology',
+        subtitle: 'Comprehensive guide to YouTube RPM, CPM, and monetization mechanics',
+        type: 'educational_methodology',
+        isEnabled: false,
+        displayOrder: 2,
+      },
+      {
+        id: 'sec_tutorial',
+        title: 'Step-by-Step Practical Tutorial',
+        subtitle: '',
+        type: 'step_tutorial',
+        isEnabled: false,
+        displayOrder: 3,
+      },
+      {
+        id: 'sec_faqs',
+        title: 'Frequently Asked Questions (FAQ)',
+        subtitle: '',
+        type: 'faq_accordion',
+        isEnabled: false,
+        displayOrder: 4,
+      },
+      {
+        id: 'sec_related',
+        title: 'Related SEO Tools in Category',
+        subtitle: '',
+        type: 'related_tools',
+        isEnabled: false,
+        displayOrder: 5,
+      },
+    ],
+    educationalContent: {
+      howItWorks:
+        'Estimates YouTube earnings from views and net creator RPM. Also calculates required views for income goals, reverse RPM, hybrid Long-form + Shorts blended RPM, What-If variations, 3-tier scenario spreads, and multi-month compound projections.',
+      formulaMethodology:
+        'Estimated Revenue = (Views ÷ 1,000) × RPM. Required Views = (Income Goal ÷ RPM) × 1,000. Blended RPM = (Total Revenue ÷ Total Views) × 1,000.',
+      stepByStepGuide: [
+        {
+          id: 'step_1',
+          stepTitle: 'Enter Your View Volume',
+          stepDescription: 'Input your monthly or per-video view count for Long-form videos and YouTube Shorts.',
+        },
+        {
+          id: 'step_2',
+          stepTitle: 'Set Creator RPM',
+          stepDescription: 'Enter your channel RPM from YouTube Studio Analytics or custom rate.',
+        },
+        {
+          id: 'step_3',
+          stepTitle: 'Explore Scenarios & Projections',
+          stepDescription: 'Switch between Income Goal planning, What-If simulation, 3-Tier Scenarios, and 12-Month Projections.',
+        },
+      ],
+    },
+    faqs: [
+      {
+        id: 'faq_yt_1',
+        question: 'How does this YouTube Revenue Calculator work?',
+        answer:
+          'It calculates estimated revenue from your view count and net creator RPM (Revenue Per Mille). Long-form and Shorts earnings can be modeled individually or blended proportionally for hybrid channels.',
+      },
+      {
+        id: 'faq_yt_2',
+        question: 'What is the difference between CPM and RPM?',
+        answer:
+          'CPM (Cost Per Mille) is what advertisers pay to YouTube per 1,000 ad impressions before YouTube takes its revenue share. RPM (Revenue Per Mille) is your actual net creator earnings per 1,000 total video views across all monetization sources.',
+      },
+      {
+        id: 'faq_yt_3',
+        question: 'How many views are required to earn ₹1,00,000 ($1,200) per month?',
+        answer:
+          'At an RPM of ₹100 ($1.20), a channel needs 1,000,000 monthly views (approximately 32,852 daily views). If your RPM is ₹200 ($2.40), 500,000 monthly views are required for the same target.',
+      },
+      {
+        id: 'faq_yt_4',
+        question: 'Why are YouTube Shorts earnings calculated separately from long-form videos?',
+        answer:
+          'Shorts and long-form videos use different monetization structures. Long-form video ads run directly on videos, while Shorts ad revenue is pooled across the Shorts feed and shared among eligible creators, typically resulting in different RPM rates.',
+      },
+      {
+        id: 'faq_yt_5',
+        question: 'Does the calculator connect directly to my YouTube Studio?',
+        answer:
+          'No. The calculator is a standalone mathematical planning tool that does not access or connect to private YouTube Studio accounts. You enter your own metrics from YouTube Studio Analytics directly into the tool.',
+      },
+    ],
+    seo: {
+      ...createDefaultSeoMetadata(
+        'YouTube Revenue Calculator | Estimate Views to Income & RPM',
+        'Calculate estimated YouTube earnings, RPM, Shorts revenue, and required views for income goals. Free YouTube revenue calculator with real-time calculations and scenario planning.',
+        'https://veritas-seo.dev/tool/youtube-revenue-calculator'
+      ),
+      focusKeyword: 'youtube revenue calculator',
+    },
+    createdAt: PRESET_TIMESTAMP,
+    updatedAt: PRESET_TIMESTAMP,
+  },
 ];
 
 export const DEMO_PRESET_REDIRECTS: RedirectRule[] = [
+  {
+    id: 'redir_direct_yt_calc',
+    fromPath: '/youtube-revenue-calculator',
+    toPath: '/tool/youtube-revenue-calculator',
+    statusCode: 301,
+    reason: 'Direct shortcut route for YouTube Revenue Calculator',
+    entityType: 'tool',
+    entityId: 'tool_youtube_revenue',
+    hits: 12,
+    createdAt: PRESET_TIMESTAMP,
+  },
   {
     id: 'redir_legacy_serp_title',
     fromPath: '/tool/google-serp-title-checker',

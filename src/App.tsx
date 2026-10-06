@@ -75,11 +75,13 @@ export interface PublicRoute {
 interface AppProps {
   initialRoute?: PublicRoute;
   initialViewMode?: ViewMode;
+  initialAction?: 'admin' | 'search' | 'sitemap' | 'robots' | null;
 }
 
 const AppContent: React.FC<AppProps> = ({
   initialRoute = { type: 'home' },
   initialViewMode = 'public',
+  initialAction = null,
 }) => {
   const router = useRouter();
   const { checkRedirect, publicCategories, publicSubCategories } = useCms();
@@ -88,8 +90,18 @@ const AppContent: React.FC<AppProps> = ({
   const [adminInitialTab, setAdminInitialTab] = useState<AdminTab>('blog');
   const [adminEditBlogPostId, setAdminEditBlogPostId] = useState<string | null>(null);
   const [route, setRoute] = useState<PublicRoute>(initialRoute);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [sitemapRobotsModalType, setSitemapRobotsModalType] = useState<'sitemap' | 'robots' | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(initialAction === 'search');
+  const [sitemapRobotsModalType, setSitemapRobotsModalType] = useState<'sitemap' | 'robots' | null>(
+    initialAction === 'sitemap' ? 'sitemap' : initialAction === 'robots' ? 'robots' : null
+  );
+
+  // Re-sync on initialAction change
+  useEffect(() => {
+    if (initialAction === 'search') setIsSearchOpen(true);
+    if (initialAction === 'sitemap') setSitemapRobotsModalType('sitemap');
+    if (initialAction === 'robots') setSitemapRobotsModalType('robots');
+    if (initialAction === 'admin') setViewMode('admin');
+  }, [initialAction]);
 
   // Compute current canonical path string
   const currentPath =

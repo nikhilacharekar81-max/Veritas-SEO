@@ -12,7 +12,7 @@ import {
   generateFaqPageSchema,
   generateBreadcrumbSchema,
 } from '../../../src/lib/schema-generator';
-import App from '../../../src/App';
+import { PublicToolDetailClient } from './ToolClientComponent';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -122,7 +122,7 @@ export default async function ToolPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <App initialRoute={{ type: 'tool', toolSlug: slug }} />
+      <PublicToolDetailClient toolSlug={slug} />
     </>
   );
 }

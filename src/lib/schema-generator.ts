@@ -40,9 +40,8 @@ export function generateToolWebApplicationSchema(
     browserRequirements: 'Requires JavaScript. Requires HTML5.',
     featureList: [
       tool.shortSummary,
-      tool.educationalContent?.howItWorks ? 'Technical Execution Flow' : 'Precision Analysis Engine',
       'Real-time Metric Calculation',
-      'Exportable Reports & Schema Validator',
+      'Scenario & Projection Modeling',
     ].filter(Boolean),
     publisher: {
       '@type': 'Organization',

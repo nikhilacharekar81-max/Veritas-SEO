@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ToolCard } from './ToolCard';
@@ -9,16 +12,13 @@ import { Layers, Wrench, ArrowRight } from 'lucide-react';
 
 interface Props {
   categorySlug: string;
-  onNavigateHome: () => void;
-  onNavigateSubCategory: (catSlug: string, subSlug: string) => void;
-  onNavigateTool: (slug: string) => void;
+  onNavigateHome?: () => void;
+  onNavigateSubCategory?: (catSlug: string, subSlug: string) => void;
+  onNavigateTool?: (slug: string) => void;
 }
 
 export const PublicCategoryHub: React.FC<Props> = ({
   categorySlug,
-  onNavigateHome,
-  onNavigateSubCategory,
-  onNavigateTool,
 }) => {
   const { publicCategories, publicSubCategories, publicTools, updateCategory, updateSubCategory } = useCms();
 
@@ -31,13 +31,12 @@ export const PublicCategoryHub: React.FC<Props> = ({
         <p className="text-xs text-slate-500">
           The requested category does not exist or has been set to hidden status by an administrator.
         </p>
-        <button
-          type="button"
-          onClick={onNavigateHome}
+        <Link
+          href="/"
           className="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl"
         >
           Return to All Tools
-        </button>
+        </Link>
       </div>
     );
   }
@@ -67,9 +66,6 @@ export const PublicCategoryHub: React.FC<Props> = ({
       {/* Semantic Breadcrumbs */}
       <Breadcrumbs
         items={breadcrumbs}
-        onNavigate={(url) => {
-          if (url === '/') onNavigateHome();
-        }}
       />
 
       {/* Category Hero Header */}
@@ -121,11 +117,11 @@ export const PublicCategoryHub: React.FC<Props> = ({
             {childSubCategories.map((sub) => {
               const subTools = publicTools.filter((t) => t.subCategoryId === sub.id);
               return (
-                <div
-                  key={sub.id}
-                  onClick={() => onNavigateSubCategory(category.slug, sub.slug)}
-                  className="bg-white p-4 rounded-2xl border border-slate-200/80 hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
-                >
+                    <Link
+                      key={sub.id}
+                      href={`/subcategory/${sub.slug}`}
+                      className="bg-white p-4 rounded-2xl border border-slate-200/80 hover:border-slate-300 hover:shadow-xs transition-all cursor-pointer group flex flex-col justify-between"
+                    >
                   <div className="space-y-1.5">
                     <h3 className="text-xs font-bold text-slate-900 group-hover:text-emerald-700 transition-colors">
                       <EditableText
@@ -151,10 +147,10 @@ export const PublicCategoryHub: React.FC<Props> = ({
                       Explore <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                     </span>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                    </Link>
+                  );
+                })}
+              </div>
         </section>
       )}
 
@@ -171,7 +167,7 @@ export const PublicCategoryHub: React.FC<Props> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {categoryTools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} onSelect={onNavigateTool} />
+              <ToolCard key={tool.id} tool={tool} />
             ))}
           </div>
         )}

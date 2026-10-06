@@ -16,6 +16,11 @@ const nextConfig = {
         destination: '/tool/keyword-density-analyzer',
         permanent: true,
       },
+      {
+        source: '/youtube-revenue-calculator',
+        destination: '/tool/youtube-revenue-calculator',
+        permanent: true,
+      },
     ];
   },
 };

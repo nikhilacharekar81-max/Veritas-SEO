@@ -1,16 +1,15 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import App from '../../src/App';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Veritas SEO Engineering Blog | Technical SEO & Content Optimization Guides',
-  description:
-    'Read technical SEO guides on N-Gram phrase frequency, SERP pixel width truncation, 301 redirect chain optimization, and Schema.org JSON-LD.',
-  alternates: {
-    canonical: 'https://veritas-seo.dev/blog',
-  },
-};
+import React from 'react';
+import { PublicBlogHub } from '../../src/components/public/PublicBlogHub';
+import { useCms } from '../../src/lib/store';
 
 export default function BlogHubPage() {
-  return <App initialRoute={{ type: 'blog' }} />;
+  const { setViewMode } = useCms();
+
+  return (
+    <PublicBlogHub 
+      onOpenBlogAdmin={() => setViewMode('admin')}
+    />
+  );
 }

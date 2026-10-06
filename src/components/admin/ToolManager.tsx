@@ -670,6 +670,12 @@ export const ToolManager: React.FC<Props> = ({
                         <option value="onpage-audit-scorer">onpage-audit-scorer (Technical Health Scorer)</option>
                         <option value="cwv-cls-calculator">cwv-cls-calculator (Core Web Vitals Math)</option>
                         <option value="readability-flesch-analyzer">readability-flesch-analyzer (Flesch-Kincaid)</option>
+                        <option value="hreflang-tag-matrix">hreflang-tag-matrix (International SEO Matrix)</option>
+                        <option value="serp-rank-calculator">serp-rank-calculator (CTR Forecaster)</option>
+                        <option value="bot-header-inspector">bot-header-inspector (Bot User-Agent Header)</option>
+                        <option value="social-card-studio">social-card-studio (Open Graph & Twitter Cards)</option>
+                        <option value="compress-pdf">compress-pdf (PDF Utility Engine)</option>
+                        <option value="youtube-revenue-calculator">youtube-revenue-calculator (YouTube Revenue Engine)</option>
                       </select>
                     </div>
                   </div>

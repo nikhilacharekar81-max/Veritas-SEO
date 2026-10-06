@@ -1,20 +1,19 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { EditableText } from './EditableText';
 import { FileText, Search, ArrowRight, Plus } from 'lucide-react';
 
 interface Props {
-  onNavigateHome: () => void;
-  onSelectPost: (slug: string) => void;
+  onNavigateHome?: () => void;
+  onSelectPost?: (slug: string) => void;
   onOpenBlogAdmin: () => void;
 }
 
 export const PublicBlogHub: React.FC<Props> = ({
-  onNavigateHome,
-  onSelectPost,
   onOpenBlogAdmin,
 }) => {
   const { publicBlogPosts, blogCategories, updateBlogPost } = useCms();
@@ -45,9 +44,6 @@ export const PublicBlogHub: React.FC<Props> = ({
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-8">
       <Breadcrumbs
         items={breadcrumbs}
-        onNavigate={(url) => {
-          if (url === '/') onNavigateHome();
-        }}
       />
 
       {/* Blog Hub Header */}
@@ -141,9 +137,9 @@ export const PublicBlogHub: React.FC<Props> = ({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredPosts.map((post) => (
-            <article
+            <Link
               key={post.id}
-              onClick={() => onSelectPost(post.slug)}
+              href={`/blog/${post.slug}`}
               className="bg-white rounded-2xl border border-slate-200/80 p-6 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all cursor-pointer group"
             >
               <div className="space-y-3">
@@ -180,7 +176,7 @@ export const PublicBlogHub: React.FC<Props> = ({
                   Read Article <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       )}

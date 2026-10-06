@@ -47,9 +47,45 @@ export const CoreWebVitalsCalculatorEngine: React.FC<Props> = () => {
   const inpStatus = getInpStatus(inpMs);
 
   return (
-    <div id="validator" className="space-y-12 scroll-mt-24">
-      {/* CWV Scorecards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="space-y-10">
+      {/* Intro Hook Section */}
+      <section className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-10 shadow-xs space-y-4">
+        <p className="text-base sm:text-lg font-medium text-slate-900 leading-relaxed">
+          A page can load quickly and still feel bad to use.
+        </p>
+        <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+          You click a button and it moves. You start reading and an image pushes the text down. An ad appears and the content jumps.
+        </p>
+        <p className="text-sm sm:text-base text-slate-700 leading-relaxed">
+          That's the kind of problem <strong className="text-slate-900 font-bold">CLS (Cumulative Layout Shift)</strong> is meant to measure.
+        </p>
+        <div className="space-y-2 pt-2">
+          <p className="text-sm sm:text-base font-semibold text-slate-900">
+            Use the calculator to work with the three Core Web Vitals:
+          </p>
+          <ul className="list-disc pl-5 text-sm sm:text-base text-slate-700 space-y-1">
+            <li><strong className="text-slate-900 font-bold">CLS</strong> for visual stability</li>
+            <li><strong className="text-slate-900 font-bold">LCP</strong> for loading performance</li>
+            <li><strong className="text-slate-900 font-bold">INP</strong> for interaction responsiveness</li>
+          </ul>
+        </div>
+        <p className="text-sm sm:text-base text-slate-700 leading-relaxed pt-2">
+          The CLS calculator lets you change the <strong className="text-slate-900 font-bold">Impact Fraction</strong> and <strong className="text-slate-900 font-bold">Distance Fraction</strong> and see how they affect the layout-shift score. You can also enter LCP and INP values to check them against their recommended thresholds.
+        </p>
+        <div className="pt-2">
+          <a
+            href="#calculator"
+            className="inline-flex items-center gap-1.5 font-bold text-sm text-emerald-700 hover:text-emerald-800 transition-colors"
+          >
+            Ready to check a value? Jump to the calculator →
+          </a>
+        </div>
+      </section>
+
+      {/* Interactive Calculator Section */}
+      <div id="calculator" className="space-y-10 scroll-mt-24">
+        {/* CWV Scorecards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* CLS */}
         <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-xs space-y-2">
           <div className="flex items-center justify-between">
@@ -180,9 +216,10 @@ export const CoreWebVitalsCalculatorEngine: React.FC<Props> = () => {
           </div>
         </div>
       </div>
-
-      {/* Comprehensive Guide */}
-      <CoreWebVitalsGuide />
     </div>
-  );
+
+    {/* Comprehensive Guide */}
+    <CoreWebVitalsGuide />
+  </div>
+);
 };

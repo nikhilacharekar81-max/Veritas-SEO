@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { generateBreadcrumbSchema } from '../../lib/schema-generator';
 import { ChevronRight, Home } from 'lucide-react';
 
@@ -9,7 +10,7 @@ export interface BreadcrumbItem {
 
 interface Props {
   items: BreadcrumbItem[];
-  onNavigate: (url: string) => void;
+  onNavigate?: (url: string) => void;
 }
 
 export const Breadcrumbs: React.FC<Props> = ({ items, onNavigate }) => {
@@ -39,14 +40,19 @@ export const Breadcrumbs: React.FC<Props> = ({ items, onNavigate }) => {
                     {item.label}
                   </span>
                 ) : (
-                  <button
-                    type="button"
-                    onClick={() => onNavigate(item.url)}
+                  <Link
+                    href={item.url}
+                    onClick={(e) => {
+                      if (onNavigate) {
+                        e.preventDefault();
+                        onNavigate(item.url);
+                      }
+                    }}
                     className="hover:text-slate-900 transition-colors flex items-center gap-1 text-slate-600"
                   >
                     {index === 0 && <Home className="w-3.5 h-3.5" />}
                     <span>{item.label}</span>
-                  </button>
+                  </Link>
                 )}
               </li>
             );

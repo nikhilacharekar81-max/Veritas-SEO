@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ToolCard } from './ToolCard';
@@ -9,17 +12,14 @@ import { Layers, Wrench } from 'lucide-react';
 interface Props {
   categorySlug: string;
   subCategorySlug: string;
-  onNavigateHome: () => void;
-  onNavigateCategory: (slug: string) => void;
-  onNavigateTool: (slug: string) => void;
+  onNavigateHome?: () => void;
+  onNavigateCategory?: (slug: string) => void;
+  onNavigateTool?: (slug: string) => void;
 }
 
 export const PublicSubCategoryHub: React.FC<Props> = ({
   categorySlug,
   subCategorySlug,
-  onNavigateHome,
-  onNavigateCategory,
-  onNavigateTool,
 }) => {
   const { publicCategories, publicSubCategories, publicTools, updateSubCategory } = useCms();
 
@@ -35,13 +35,12 @@ export const PublicSubCategoryHub: React.FC<Props> = ({
         <p className="text-xs text-slate-500">
           The requested sub-category does not exist or has been unpublished.
         </p>
-        <button
-          type="button"
-          onClick={onNavigateHome}
+        <Link
+          href="/"
           className="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl"
         >
           Return Home
-        </button>
+        </Link>
       </div>
     );
   }
@@ -67,13 +66,7 @@ export const PublicSubCategoryHub: React.FC<Props> = ({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
 
-      <Breadcrumbs
-        items={breadcrumbs}
-        onNavigate={(url) => {
-          if (url === '/') onNavigateHome();
-          else if (url.startsWith('/category/')) onNavigateCategory(category.slug);
-        }}
-      />
+      <Breadcrumbs items={breadcrumbs} />
 
       <header className="bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center gap-4">
@@ -118,7 +111,7 @@ export const PublicSubCategoryHub: React.FC<Props> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {subTools.map((tool) => (
-              <ToolCard key={tool.id} tool={tool} onSelect={onNavigateTool} />
+              <ToolCard key={tool.id} tool={tool} />
             ))}
           </div>
         )}

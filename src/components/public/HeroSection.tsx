@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { ToolCard } from './ToolCard';
 import { EditableText } from './EditableText';
@@ -15,16 +16,13 @@ import {
 } from 'lucide-react';
 
 interface Props {
-  onSelectCategory: (slug: string) => void;
-  onSelectSubCategory: (catSlug: string, subSlug: string) => void;
-  onSelectTool: (slug: string) => void;
+  onSelectCategory?: (slug: string) => void;
+  onSelectSubCategory?: (catSlug: string, subSlug: string) => void;
+  onSelectTool?: (slug: string) => void;
   onOpenAdmin: () => void;
 }
 
 export const HeroSection: React.FC<Props> = ({
-  onSelectCategory,
-  onSelectSubCategory,
-  onSelectTool,
   onOpenAdmin,
 }) => {
   const { publicCategories, publicSubCategories, publicTools, seedDemoPresets, updateCategory } = useCms();
@@ -103,13 +101,12 @@ export const HeroSection: React.FC<Props> = ({
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <button
-              type="button"
-              onClick={onOpenAdmin}
+            <Link
+              href="/admin"
               className="w-full sm:w-auto px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-all shadow-xs"
             >
               <Sliders className="w-4 h-4" /> Open Admin Panel &amp; Create Categories
-            </button>
+            </Link>
             <button
               type="button"
               onClick={() => {
@@ -209,7 +206,7 @@ export const HeroSection: React.FC<Props> = ({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredTools.map((tool) => (
-                  <ToolCard key={tool.id} tool={tool} onSelect={onSelectTool} />
+                  <ToolCard key={tool.id} tool={tool} />
                 ))}
               </div>
             )}
@@ -243,9 +240,9 @@ export const HeroSection: React.FC<Props> = ({
                   const catSubs = publicSubCategories.filter((s) => s.categoryId === cat.id);
 
                   return (
-                    <div
+                    <Link
                       key={cat.id}
-                      onClick={() => onSelectCategory(cat.slug)}
+                      href={`/category/${cat.slug}`}
                       className="bg-white rounded-2xl border border-slate-200/80 p-6 hover:border-slate-300 hover:shadow-md transition-all cursor-pointer group space-y-4 flex flex-col justify-between"
                     >
                       <div className="space-y-3">
@@ -279,7 +276,7 @@ export const HeroSection: React.FC<Props> = ({
                           View Hub <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                         </span>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>

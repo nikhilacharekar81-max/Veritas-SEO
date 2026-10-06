@@ -6,7 +6,7 @@ import {
   DEMO_PRESET_TOOLS,
 } from '../../../src/lib/demo-presets';
 import { generateCollectionPageSchema } from '../../../src/lib/schema-generator';
-import App from '../../../src/App';
+import { PublicCategoryHub } from '../../../src/components/public/PublicCategoryHub';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -67,7 +67,7 @@ export default async function CategoryPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
-      <App initialRoute={{ type: 'category', categorySlug: slug }} />
+      <PublicCategoryHub categorySlug={slug} />
     </>
   );
 }

@@ -36,6 +36,8 @@ interface Props {
   label?: string;
   /** Use multiline textarea by default */
   multiline?: boolean;
+  /** Optional onClick handler for the wrapper */
+  onClick?: (e: React.MouseEvent) => void;
   /** Deprecated prop kept for compatibility */
   allowHtml?: boolean;
 }
@@ -49,6 +51,7 @@ export const EditableText: React.FC<Props> = memo(({
   as: Component = 'span',
   label,
   multiline = false,
+  onClick,
 }) => {
   const { getContentBlock, setContentBlock, isFrontendEditMode } = useCms();
 
@@ -284,7 +287,10 @@ export const EditableText: React.FC<Props> = memo(({
 
   return (
     <>
-      <Component className={`group/editable relative inline ${className}`}>
+      <Component 
+        onClick={onClick}
+        className={`group/editable relative inline ${className}`}
+      >
         <span
           className="veritas-rich-content inline"
           dangerouslySetInnerHTML={{ __html: resolvedContent }}

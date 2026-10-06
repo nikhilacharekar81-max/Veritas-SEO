@@ -156,6 +156,7 @@ export const ToolEngineTypeSchema = z.enum([
   'bot-header-inspector',
   'social-card-studio',
   'compress-pdf',
+  'youtube-revenue-calculator',
 ]);
 
 export type ToolEngineType = z.infer<typeof ToolEngineTypeSchema>;

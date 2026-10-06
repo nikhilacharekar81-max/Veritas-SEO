@@ -1,24 +1,19 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { PublicToolDetail } from '../../../src/components/public/PublicToolDetail';
 
 export function PublicToolDetailClient({ toolSlug }: { toolSlug: string }) {
+  const router = useRouter();
+
   return (
     <PublicToolDetail
       toolSlug={toolSlug}
-      onNavigateHome={() => {
-        if (typeof window !== 'undefined') window.location.href = '/';
-      }}
-      onNavigateCategory={(slug) => {
-        if (typeof window !== 'undefined') window.location.href = `/category/${slug}`;
-      }}
-      onNavigateSubCategory={(_catSlug, subSlug) => {
-        if (typeof window !== 'undefined') window.location.href = `/subcategory/${subSlug}`;
-      }}
-      onNavigateTool={(slug) => {
-        if (typeof window !== 'undefined') window.location.href = `/tool/${slug}`;
-      }}
+      onNavigateHome={() => router.push('/')}
+      onNavigateCategory={(slug) => router.push(`/category/${slug}`)}
+      onNavigateSubCategory={(_catSlug, subSlug) => router.push(`/subcategory/${subSlug}`)}
+      onNavigateTool={(slug) => router.push(`/tool/${slug}`)}
     />
   );
 }

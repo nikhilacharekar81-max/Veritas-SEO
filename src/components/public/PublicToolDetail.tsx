@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { Breadcrumbs } from './Breadcrumbs';
 import { ToolEngineDispatcher } from '../tools/ToolEngineDispatcher';
@@ -31,18 +32,14 @@ import {
 
 interface Props {
   toolSlug: string;
-  onNavigateHome: () => void;
-  onNavigateCategory: (slug: string) => void;
-  onNavigateSubCategory: (catSlug: string, subSlug: string) => void;
-  onNavigateTool: (slug: string) => void;
+  onNavigateHome?: () => void;
+  onNavigateCategory?: (slug: string) => void;
+  onNavigateSubCategory?: (catSlug: string, subSlug: string) => void;
+  onNavigateTool?: (slug: string) => void;
 }
 
 export const PublicToolDetail: React.FC<Props> = ({
   toolSlug,
-  onNavigateHome,
-  onNavigateCategory,
-  onNavigateSubCategory,
-  onNavigateTool,
 }) => {
   const {
     publicCategories,
@@ -87,13 +84,12 @@ export const PublicToolDetail: React.FC<Props> = ({
         <p className="text-xs text-slate-500">
           This SEO tool is not available in the public registry.
         </p>
-        <button
-          type="button"
-          onClick={onNavigateHome}
+        <Link
+          href="/"
           className="px-4 py-2 bg-slate-900 text-white text-xs font-semibold rounded-xl"
         >
           Return to Tools Directory
-        </button>
+        </Link>
       </div>
     );
   }
@@ -127,15 +123,7 @@ export const PublicToolDetail: React.FC<Props> = ({
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-8 py-6 space-y-10">
       {/* Semantic Breadcrumbs */}
-      <Breadcrumbs
-        items={breadcrumbs}
-        onNavigate={(url) => {
-          if (url === '/') onNavigateHome();
-          else if (url.startsWith('/category/') && category) onNavigateCategory(category.slug);
-          else if (url.startsWith('/subcategory/') && category && subCategory)
-            onNavigateSubCategory(category.slug, subCategory.slug);
-        }}
-      />
+      <Breadcrumbs items={breadcrumbs} />
 
       {/* DYNAMIC MODULAR SECTIONS (Ordered & Toggleable from Content Manager) */}
       {ensureToolSections(tool)
@@ -250,7 +238,10 @@ export const PublicToolDetail: React.FC<Props> = ({
               tool.slug === 'onpage-audit-scorer' ||
               tool.id === 'tool_cwv_cls' ||
               tool.engineType === 'cwv-cls-calculator' ||
-              tool.slug === 'cwv-cls-calculator'
+              tool.slug === 'cwv-cls-calculator' ||
+              tool.id === 'tool_readability_flesch' ||
+              tool.engineType === 'readability-flesch-analyzer' ||
+              tool.slug === 'readability-flesch-analyzer'
             ) {
               return null;
             }
@@ -435,6 +426,9 @@ export const PublicToolDetail: React.FC<Props> = ({
               tool.id === 'tool_cwv_cls' ||
               tool.engineType === 'cwv-cls-calculator' ||
               tool.slug === 'cwv-cls-calculator' ||
+              tool.id === 'tool_readability_flesch' ||
+              tool.engineType === 'readability-flesch-analyzer' ||
+              tool.slug === 'readability-flesch-analyzer' ||
               !tool.educationalContent?.stepByStepGuide ||
               tool.educationalContent.stepByStepGuide.length === 0
             ) {
@@ -503,6 +497,9 @@ export const PublicToolDetail: React.FC<Props> = ({
               tool.id === 'tool_cwv_cls' ||
               tool.engineType === 'cwv-cls-calculator' ||
               tool.slug === 'cwv-cls-calculator' ||
+              tool.id === 'tool_readability_flesch' ||
+              tool.engineType === 'readability-flesch-analyzer' ||
+              tool.slug === 'readability-flesch-analyzer' ||
               !tool.faqs ||
               tool.faqs.length === 0
             ) {
@@ -618,7 +615,7 @@ export const PublicToolDetail: React.FC<Props> = ({
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {relatedTools.map((relTool) => (
-                    <ToolCard key={relTool.id} tool={relTool} onSelect={onNavigateTool} />
+                    <ToolCard key={relTool.id} tool={relTool} />
                   ))}
                 </div>
               </section>

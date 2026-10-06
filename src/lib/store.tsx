@@ -225,6 +225,14 @@ interface CmsContextType {
   isFrontendEditMode: boolean;
   setIsFrontendEditMode: (enabled: boolean) => void;
 
+  // Global UI State
+  isSearchOpen: boolean;
+  setIsSearchOpen: (open: boolean) => void;
+  sitemapRobotsModalType: 'sitemap' | 'robots' | null;
+  setSitemapRobotsModalType: (type: 'sitemap' | 'robots' | null) => void;
+  viewMode: 'public' | 'admin';
+  setViewMode: (mode: 'public' | 'admin') => void;
+
   // Active public views (filtered by cascading active rules)
   publicCategories: MainCategory[];
   publicSubCategories: SubCategory[];
@@ -299,6 +307,31 @@ interface CmsContextType {
 
 const CmsContext = createContext<CmsContextType | null>(null);
 
+const containsRogueText = (val: unknown): boolean => {
+  if (!val) return false;
+  let str = '';
+  if (typeof val === 'string') {
+    str = val;
+  } else if (typeof val === 'object') {
+    try {
+      str = JSON.stringify(val);
+    } catch {
+      return false;
+    }
+  }
+  const s = str.toLowerCase();
+  return (
+    s.includes('recommended direction') ||
+    s.includes('youtube → 20 random tools') ||
+    s.includes('instagram → 20 random tools') ||
+    s.includes('tiktok → 20 random tools') ||
+    s.includes('branding issue to think about') ||
+    s.includes('veritas starts sounding narrower') ||
+    s.includes('suggested creator tools taxonomy') ||
+    s.includes('build creator tools around actual creator decisions')
+  );
+};
+
 export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // CRITICAL MANDATE: Start with deterministic state on both SSR and Client initial render
   const [categories, setCategories] = useState<MainCategory[]>(DEMO_PRESET_CATEGORIES);
@@ -311,38 +344,89 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>(DEFAULT_CONTENT_BLOCKS);
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>(DEMO_PRESET_BLOG_POSTS);
   const [blogCategories, setBlogCategories] = useState<string[]>(DEFAULT_BLOG_CATEGORIES);
-  const [isFrontendEditMode, setIsFrontendEditMode] = useState<boolean>(true);
+  const [isFrontendEditMode, setIsFrontendEditMode] = useState<boolean>(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [sitemapRobotsModalType, setSitemapRobotsModalType] = useState<'sitemap' | 'robots' | null>(null);
+  const [viewMode, setViewMode] = useState<'public' | 'admin'>('public');
   const [isHydrated, setIsHydrated] = useState(false);
   const isInitialMount = useRef(true);
 
   // Load from localStorage AFTER initial client mount to guarantee 100% hydration matching
   useEffect(() => {
     try {
+      // 0. Auto-scrub any rogue/corrupted localStorage entries from earlier sessions
+      try {
+        const keysToRemove: string[] = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key) {
+            const val = localStorage.getItem(key);
+            if (val && containsRogueText(val) && !Object.values(STORAGE_KEYS).includes(key)) {
+              keysToRemove.push(key);
+            }
+          }
+        }
+        keysToRemove.forEach((k) => localStorage.removeItem(k));
+      } catch (e) {
+        console.warn('LocalStorage key scan warning:', e);
+      }
+
       const savedCat = localStorage.getItem(STORAGE_KEYS.CATEGORIES);
       if (savedCat) {
-        const parsedCat: MainCategory[] = JSON.parse(savedCat);
+        let parsedCat: MainCategory[] = JSON.parse(savedCat);
         if (Array.isArray(parsedCat) && parsedCat.length > 0) {
+          parsedCat = parsedCat.filter(
+            (c) => !containsRogueText(c.name) && !containsRogueText(c.description) && !containsRogueText(c.slug)
+          );
           const existingCatIds = new Set(parsedCat.map((c) => c.id));
           const missingCats = DEMO_PRESET_CATEGORIES.filter((c) => !existingCatIds.has(c.id));
-          setCategories([...parsedCat, ...missingCats]);
+          const finalCats = [...parsedCat, ...missingCats];
+          setCategories(finalCats);
+          localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(finalCats));
+        } else {
+          setCategories(DEMO_PRESET_CATEGORIES);
+          localStorage.setItem(STORAGE_KEYS.CATEGORIES, JSON.stringify(DEMO_PRESET_CATEGORIES));
         }
       }
 
       const savedSub = localStorage.getItem(STORAGE_KEYS.SUBCATEGORIES);
       if (savedSub) {
-        const parsedSub: SubCategory[] = JSON.parse(savedSub);
+        let parsedSub: SubCategory[] = JSON.parse(savedSub);
         if (Array.isArray(parsedSub) && parsedSub.length > 0) {
+          parsedSub = parsedSub.filter(
+            (s) => !containsRogueText(s.name) && !containsRogueText(s.description) && !containsRogueText(s.slug)
+          );
           const existingSubIds = new Set(parsedSub.map((s) => s.id));
           const missingSubs = DEMO_PRESET_SUBCATEGORIES.filter((s) => !existingSubIds.has(s.id));
-          setSubCategories([...parsedSub, ...missingSubs]);
+          const finalSubs = [...parsedSub, ...missingSubs];
+          setSubCategories(finalSubs);
+          localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(finalSubs));
+        } else {
+          setSubCategories(DEMO_PRESET_SUBCATEGORIES);
+          localStorage.setItem(STORAGE_KEYS.SUBCATEGORIES, JSON.stringify(DEMO_PRESET_SUBCATEGORIES));
         }
       }
 
       const savedTools = localStorage.getItem(STORAGE_KEYS.TOOLS);
       const blueprintMigrated = localStorage.getItem('veritas_seo_kw_blueprint_v2');
       if (savedTools) {
-        const parsedTools: SeoTool[] = JSON.parse(savedTools);
+        let parsedTools: SeoTool[] = JSON.parse(savedTools);
         if (Array.isArray(parsedTools) && parsedTools.length > 0) {
+          parsedTools = parsedTools
+            .filter((t) => {
+              if (DEMO_PRESET_TOOLS.some((p) => p.id === t.id || p.slug === t.slug)) {
+                return true;
+              }
+              return !containsRogueText(t.title) && !containsRogueText(t.slug) && !containsRogueText(t.shortSummary);
+            })
+            .map((t) => {
+              const preset = DEMO_PRESET_TOOLS.find((p) => p.id === t.id || p.slug === t.slug);
+              if (preset && (containsRogueText(t.shortSummary) || containsRogueText(t.educationalContent) || containsRogueText(t.title))) {
+                return preset;
+              }
+              return t;
+            });
+
           const existingToolIds = new Set(parsedTools.map((t) => t.id));
           const existingToolSlugs = new Set(parsedTools.map((t) => t.slug));
           const missingPresetTools = DEMO_PRESET_TOOLS.filter(
@@ -360,6 +444,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           const robotsPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_robots_validator');
           const onpagePreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_onpage_scorer');
           const cwvPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_cwv_cls');
+          const fleschPreset = DEMO_PRESET_TOOLS.find((t) => t.id === 'tool_readability_flesch');
           const serpMigrated = localStorage.getItem('veritas_seo_serp_pixel_v6');
           const schemaGuideMigrated = localStorage.getItem('veritas_seo_schema_guide_v5');
           const redirectCleanMigrated = localStorage.getItem('veritas_seo_redirect_clean_v1');
@@ -369,15 +454,25 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           const socialMetaMigrated = localStorage.getItem('veritas_seo_social_meta_v3');
           const robotsCleanMigrated = localStorage.getItem('veritas_seo_robots_clean_v1');
           const onpageCleanMigrated = localStorage.getItem('veritas_seo_onpage_clean_v1');
-          const cwvCleanMigrated = localStorage.getItem('veritas_seo_cwv_clean_v1');
+          const cwvCleanMigrated = localStorage.getItem('veritas_seo_cwv_content_v2');
+          const fleschGuideMigrated = localStorage.getItem('veritas_seo_flesch_guide_v2');
           const mergedTools = [...parsedTools, ...missingPresetTools].map((t) => {
             const fixedSubCat =
               t.subCategoryId === 'subcat_serp_simulators' ? 'subcat_serp_preview' : t.subCategoryId;
+            if (!fleschGuideMigrated && (t.id === 'tool_readability_flesch' || t.slug === 'readability-flesch-analyzer' || t.engineType === 'readability-flesch-analyzer') && fleschPreset) {
+              return {
+                ...t,
+                sections: fleschPreset.sections,
+                shortSummary: fleschPreset.shortSummary,
+                educationalContent: fleschPreset.educationalContent,
+                faqs: [],
+              };
+            }
             if (!cwvCleanMigrated && (t.id === 'tool_cwv_cls' || t.slug === 'cwv-cls-calculator' || t.engineType === 'cwv-cls-calculator') && cwvPreset) {
               return {
                 ...t,
                 sections: cwvPreset.sections,
-                educationalContent: { howItWorks: '', formulaMethodology: '', stepByStepGuide: [] },
+                educationalContent: cwvPreset.educationalContent,
                 faqs: [],
               };
             }
@@ -476,6 +571,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           });
 
           setTools(mergedTools);
+          localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(mergedTools));
           localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
           localStorage.setItem('veritas_seo_serp_pixel_v6', 'true');
           localStorage.setItem('veritas_seo_schema_guide_v5', 'true');
@@ -486,9 +582,11 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           localStorage.setItem('veritas_seo_social_meta_v3', 'true');
           localStorage.setItem('veritas_seo_robots_clean_v1', 'true');
           localStorage.setItem('veritas_seo_onpage_clean_v1', 'true');
-          localStorage.setItem('veritas_seo_cwv_clean_v1', 'true');
+          localStorage.setItem('veritas_seo_cwv_content_v2', 'true');
+          localStorage.setItem('veritas_seo_flesch_guide_v2', 'true');
         }
       } else {
+        localStorage.setItem(STORAGE_KEYS.TOOLS, JSON.stringify(DEMO_PRESET_TOOLS));
         localStorage.setItem('veritas_seo_kw_blueprint_v2', 'true');
         localStorage.setItem('veritas_seo_schema_guide_v5', 'true');
         localStorage.setItem('veritas_seo_redirect_clean_v1', 'true');
@@ -498,7 +596,8 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         localStorage.setItem('veritas_seo_social_meta_v3', 'true');
         localStorage.setItem('veritas_seo_robots_clean_v1', 'true');
         localStorage.setItem('veritas_seo_onpage_clean_v1', 'true');
-        localStorage.setItem('veritas_seo_cwv_clean_v1', 'true');
+        localStorage.setItem('veritas_seo_cwv_content_v2', 'true');
+        localStorage.setItem('veritas_seo_flesch_guide_v2', 'true');
       }
 
       const savedRedir = localStorage.getItem(STORAGE_KEYS.REDIRECTS);
@@ -517,26 +616,41 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (savedBlocks) {
         const parsedBlocks: ContentBlock[] = JSON.parse(savedBlocks);
         if (Array.isArray(parsedBlocks)) {
-          const blockMap = new Map(parsedBlocks.map((b) => [b.key, b]));
+          const blockMap = new Map(
+            parsedBlocks
+              .filter((b) => !containsRogueText(b.key) && !containsRogueText(b.content))
+              .map((b) => [b.key, b])
+          );
           const merged: ContentBlock[] = DEFAULT_CONTENT_BLOCKS.map((def) =>
             blockMap.has(def.key) ? blockMap.get(def.key)! : def
           );
           parsedBlocks.forEach((b) => {
-            if (!DEFAULT_CONTENT_BLOCKS.some((def) => def.key === b.key)) {
+            if (!DEFAULT_CONTENT_BLOCKS.some((def) => def.key === b.key) && !containsRogueText(b.content) && !containsRogueText(b.key)) {
               merged.push(b);
             }
           });
           setContentBlocks(merged);
+          localStorage.setItem(STORAGE_KEYS.CONTENT_BLOCKS, JSON.stringify(merged));
         }
+      } else {
+        localStorage.setItem(STORAGE_KEYS.CONTENT_BLOCKS, JSON.stringify(DEFAULT_CONTENT_BLOCKS));
       }
 
       const savedBlog = localStorage.getItem(STORAGE_KEYS.BLOG_POSTS);
       if (savedBlog) {
-        const parsedBlog: BlogPost[] = JSON.parse(savedBlog);
+        let parsedBlog: BlogPost[] = JSON.parse(savedBlog);
         if (Array.isArray(parsedBlog) && parsedBlog.length > 0) {
+          parsedBlog = parsedBlog.filter(
+            (p) => !containsRogueText(p.title) && !containsRogueText(p.content) && !containsRogueText(p.excerpt)
+          );
           const existingIds = new Set(parsedBlog.map((p) => p.id));
           const missingPresets = DEMO_PRESET_BLOG_POSTS.filter((p) => !existingIds.has(p.id));
-          setBlogPosts([...parsedBlog, ...missingPresets]);
+          const finalBlogs = [...parsedBlog, ...missingPresets];
+          setBlogPosts(finalBlogs);
+          localStorage.setItem(STORAGE_KEYS.BLOG_POSTS, JSON.stringify(finalBlogs));
+        } else {
+          setBlogPosts(DEMO_PRESET_BLOG_POSTS);
+          localStorage.setItem(STORAGE_KEYS.BLOG_POSTS, JSON.stringify(DEMO_PRESET_BLOG_POSTS));
         }
       }
 
@@ -544,7 +658,7 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (savedBlogCats) {
         const parsedBlogCats: string[] = JSON.parse(savedBlogCats);
         if (Array.isArray(parsedBlogCats) && parsedBlogCats.length > 0) {
-          setBlogCategories(parsedBlogCats);
+          setBlogCategories(parsedBlogCats.filter((c) => !containsRogueText(c)));
         }
       }
     } catch (e) {
@@ -1506,6 +1620,12 @@ export const CmsProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         blogCategories,
         isFrontendEditMode,
         setIsFrontendEditMode,
+        isSearchOpen,
+        setIsSearchOpen,
+        sitemapRobotsModalType,
+        setSitemapRobotsModalType,
+        viewMode,
+        setViewMode,
         setContentBlock,
         getContentBlock,
         deleteContentBlock,

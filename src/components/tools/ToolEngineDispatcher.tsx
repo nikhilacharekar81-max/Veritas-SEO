@@ -14,6 +14,7 @@ import { SerpRankCtrCalculatorEngine } from './SerpRankCtrCalculatorEngine';
 import { BotHeaderSimulatorEngine } from './BotHeaderSimulatorEngine';
 import { SocialCardStudioEngine } from './SocialCardStudioEngine';
 import { CompressPdfEngine } from './CompressPdfEngine';
+import { YouTubeRevenueCalculatorEngine } from './YouTubeRevenueCalculatorEngine';
 
 interface Props {
   tool: SeoTool;
@@ -64,6 +65,8 @@ export const ToolEngineDispatcher: React.FC<Props> = ({ tool, onCalculationPerfo
       return <SocialCardStudioEngine tool={tool} onPerformCalculation={handleCalculation} />;
     case 'compress-pdf':
       return <CompressPdfEngine tool={tool} onPerformCalculation={handleCalculation} />;
+    case 'youtube-revenue-calculator':
+      return <YouTubeRevenueCalculatorEngine tool={tool} onPerformCalculation={handleCalculation} />;
     default:
       return <SerpPixelSimulatorEngine tool={tool} onPerformCalculation={handleCalculation} />;
   }

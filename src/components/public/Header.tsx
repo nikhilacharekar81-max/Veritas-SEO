@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { IconRenderer } from '../ui/IconRenderer';
 import {
@@ -26,29 +27,29 @@ import {
 interface Props {
   currentPath?: string;
   onNavigateByPath?: (path: string) => void;
-  onOpenAdmin: () => void;
-  onOpenSearch: () => void;
-  onNavigateHome: () => void;
-  onNavigateCategory: (slug: string) => void;
-  onNavigateSubCategory: (catSlug: string, subSlug: string) => void;
-  onNavigateTool: (slug: string) => void;
+  onOpenAdmin?: () => void;
+  onOpenSearch?: () => void;
+  onNavigateHome?: () => void;
+  onNavigateCategory?: (slug: string) => void;
+  onNavigateSubCategory?: (catSlug: string, subSlug: string) => void;
+  onNavigateTool?: (slug: string) => void;
   onNavigateBlog?: () => void;
-  onOpenSitemapModal: () => void;
-  onOpenRobotsModal: () => void;
+  onOpenSitemapModal?: () => void;
+  onOpenRobotsModal?: () => void;
 }
 
 export const Header: React.FC<Props> = ({
   currentPath = '/',
   onNavigateByPath,
-  onOpenAdmin,
-  onOpenSearch,
+  onOpenAdmin = () => {},
+  onOpenSearch = () => {},
   onNavigateHome,
   onNavigateCategory,
   onNavigateSubCategory,
   onNavigateTool,
   onNavigateBlog,
-  onOpenSitemapModal,
-  onOpenRobotsModal,
+  onOpenSitemapModal = () => {},
+  onOpenRobotsModal = () => {},
 }) => {
   const {
     publicCategories,
@@ -98,14 +99,13 @@ export const Header: React.FC<Props> = ({
             >
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
-            <button
-              type="button"
-              onClick={onNavigateHome}
+            <Link
+              href="/"
               className="p-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors"
               title="Home (/)"
             >
               <Home className="w-3.5 h-3.5" />
-            </button>
+            </Link>
           </div>
 
           {/* Interactive Address Bar + Quick Route Directory Dropdown */}
@@ -212,9 +212,8 @@ export const Header: React.FC<Props> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-4">
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-6">
-          <button
-            type="button"
-            onClick={onNavigateHome}
+          <Link
+            href="/"
             className="flex items-center gap-2.5 text-left group"
           >
             <div className="w-8 h-8 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-base font-serif shadow-xs group-hover:scale-105 transition-transform">
@@ -226,7 +225,7 @@ export const Header: React.FC<Props> = ({
               </span>
               <span className="text-[10px] text-slate-400 block -mt-1 font-mono">Enterprise Platform</span>
             </div>
-          </button>
+          </Link>
 
           {/* Desktop Category Dropdown Navigation */}
           <nav className="hidden lg:flex items-center gap-1 text-xs font-semibold text-slate-600">
@@ -240,9 +239,8 @@ export const Header: React.FC<Props> = ({
                   onMouseEnter={() => setActiveDropdownCatId(cat.id)}
                   onMouseLeave={() => setActiveDropdownCatId(null)}
                 >
-                  <button
-                    type="button"
-                    onClick={() => onNavigateCategory(cat.slug)}
+                  <Link
+                    href={`/category/${cat.slug}`}
                     className={`px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors ${
                       activeDropdownCatId === cat.id
                         ? 'bg-slate-100 text-slate-900'
@@ -252,7 +250,7 @@ export const Header: React.FC<Props> = ({
                     <IconRenderer name={cat.icon} className="w-3.5 h-3.5 text-slate-500" />
                     <span>{cat.name}</span>
                     {childSubs.length > 0 && <ChevronDown className="w-3 h-3 text-slate-400" />}
-                  </button>
+                  </Link>
 
                   {/* Mega-Dropdown Menu */}
                   {activeDropdownCatId === cat.id && childSubs.length > 0 && (
@@ -262,20 +260,17 @@ export const Header: React.FC<Props> = ({
                           {cat.name} Hubs
                         </div>
                         {childSubs.map((sub) => (
-                          <button
+                          <Link
                             key={sub.id}
-                            type="button"
-                            onClick={() => {
-                              onNavigateSubCategory(cat.slug, sub.slug);
-                              setActiveDropdownCatId(null);
-                            }}
+                            href={`/subcategory/${sub.slug}`}
+                            onClick={() => setActiveDropdownCatId(null)}
                             className="w-full text-left p-2 rounded-xl hover:bg-slate-50 text-slate-800 text-xs flex items-center justify-between group"
                           >
                             <span className="font-semibold group-hover:text-emerald-700">{sub.name}</span>
                             <span className="text-[10px] font-mono text-slate-400">
                               {publicTools.filter((t) => t.subCategoryId === sub.id).length} tools
                             </span>
-                          </button>
+                          </Link>
                         ))}
                       </div>
                     </div>
@@ -284,20 +279,17 @@ export const Header: React.FC<Props> = ({
               );
             })}
 
-            {onNavigateBlog && (
-              <button
-                type="button"
-                onClick={onNavigateBlog}
-                className={`px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors ${
-                  currentPath.startsWith('/blog')
-                    ? 'bg-slate-100 text-slate-900 font-bold'
-                    : 'hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Blog</span>
-              </button>
-            )}
+            <Link
+              href="/blog"
+              className={`px-3 py-2 rounded-xl flex items-center gap-1.5 transition-colors ${
+                currentPath.startsWith('/blog')
+                  ? 'bg-slate-100 text-slate-900 font-bold'
+                  : 'hover:bg-slate-50 hover:text-slate-900'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-emerald-600" />
+              <span>Blog</span>
+            </Link>
           </nav>
         </div>
 
@@ -356,14 +348,13 @@ export const Header: React.FC<Props> = ({
           </button>
 
           {/* Admin CMS Button */}
-          <button
-            type="button"
-            onClick={onOpenAdmin}
+          <Link
+            href="/admin"
             className="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl flex items-center gap-1.5 transition-all shadow-xs"
           >
             <Sliders className="w-3.5 h-3.5" />
             <span>Admin Panel</span>
-          </button>
+          </Link>
 
           {/* Mobile menu toggle */}
           <button
@@ -384,32 +375,30 @@ export const Header: React.FC<Props> = ({
           </div>
           {publicCategories.map((cat) => (
             <div key={cat.id} className="space-y-1">
-              <button
-                type="button"
+              <Link
+                href={`/category/${cat.slug}`}
                 onClick={() => {
-                  onNavigateCategory(cat.slug);
                   setMobileMenuOpen(false);
                 }}
                 className="w-full text-left px-3 py-2 text-xs font-bold text-slate-900 hover:bg-slate-50 rounded-xl flex items-center gap-2"
               >
                 <IconRenderer name={cat.icon} className="w-4 h-4 text-slate-600" />
                 <span>{cat.name}</span>
-              </button>
+              </Link>
               <div className="pl-6 space-y-1">
                 {publicSubCategories
                   .filter((s) => s.categoryId === cat.id)
                   .map((sub) => (
-                    <button
+                    <Link
                       key={sub.id}
-                      type="button"
+                      href={`/subcategory/${sub.slug}`}
                       onClick={() => {
-                        onNavigateSubCategory(cat.slug, sub.slug);
                         setMobileMenuOpen(false);
                       }}
                       className="w-full text-left px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50 rounded-lg block"
                     >
                       ↳ {sub.name}
-                    </button>
+                    </Link>
                   ))}
               </div>
             </div>

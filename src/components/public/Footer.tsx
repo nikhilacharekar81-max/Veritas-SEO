@@ -1,24 +1,22 @@
 import React from 'react';
+import Link from 'next/link';
 import { useCms } from '../../lib/store';
 import { EditableText } from './EditableText';
 import { ShieldCheck, FileCode, Bot, Sparkles } from 'lucide-react';
 
 interface Props {
-  onNavigateHome: () => void;
-  onNavigateCategory: (slug: string) => void;
-  onNavigateTool: (slug: string) => void;
-  onOpenSitemapModal: () => void;
-  onOpenRobotsModal: () => void;
-  onOpenAdmin: () => void;
+  onNavigateHome?: () => void;
+  onNavigateCategory?: (slug: string) => void;
+  onNavigateTool?: (slug: string) => void;
+  onOpenSitemapModal?: () => void;
+  onOpenRobotsModal?: () => void;
+  onOpenAdmin?: () => void;
 }
 
 export const Footer: React.FC<Props> = ({
-  onNavigateHome,
-  onNavigateCategory,
-  onNavigateTool,
-  onOpenSitemapModal,
-  onOpenRobotsModal,
-  onOpenAdmin,
+  onOpenSitemapModal = () => {},
+  onOpenRobotsModal = () => {},
+  onOpenAdmin = () => {},
 }) => {
   const { publicCategories, publicTools } = useCms();
 
@@ -28,9 +26,8 @@ export const Footer: React.FC<Props> = ({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Col 1: Platform Brand */}
           <div className="space-y-3 md:col-span-1">
-            <button
-              type="button"
-              onClick={onNavigateHome}
+            <Link
+              href="/"
               className="flex items-center gap-2 text-left"
             >
               <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-sm font-serif">
@@ -39,7 +36,7 @@ export const Footer: React.FC<Props> = ({
               <span className="font-extrabold text-sm tracking-tight text-slate-900">
                 VERITAS <span className="font-serif italic font-normal text-slate-600">SEO</span>
               </span>
-            </button>
+            </Link>
             <p className="text-slate-500 leading-relaxed text-[11px]">
               <EditableText
                 blockKey="footer.tagline"
@@ -64,13 +61,12 @@ export const Footer: React.FC<Props> = ({
               ) : (
                 publicCategories.slice(0, 5).map((cat) => (
                   <li key={cat.id}>
-                    <button
-                      type="button"
-                      onClick={() => onNavigateCategory(cat.slug)}
+                    <Link
+                      href={`/category/${cat.slug}`}
                       className="hover:text-slate-900 transition-colors"
                     >
                       {cat.name}
-                    </button>
+                    </Link>
                   </li>
                 ))
               )}
@@ -88,13 +84,12 @@ export const Footer: React.FC<Props> = ({
               ) : (
                 publicTools.slice(0, 5).map((tool) => (
                   <li key={tool.id}>
-                    <button
-                      type="button"
-                      onClick={() => onNavigateTool(tool.slug)}
+                    <Link
+                      href={`/tool/${tool.slug}`}
                       className="hover:text-slate-900 transition-colors truncate max-w-[200px] block"
                     >
                       {tool.title}
-                    </button>
+                    </Link>
                   </li>
                 ))
               )}
@@ -128,14 +123,13 @@ export const Footer: React.FC<Props> = ({
                 </button>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={onOpenAdmin}
+                <Link
+                  href="/admin"
                   className="hover:text-slate-900 transition-colors flex items-center gap-1.5 font-semibold text-slate-900"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Taxonomy Admin Panel</span>
-                </button>
+                </Link>
               </li>
             </ul>
           </div>

@@ -7,7 +7,7 @@ import {
   DEMO_PRESET_TOOLS,
 } from '../../../src/lib/demo-presets';
 import { generateCollectionPageSchema } from '../../../src/lib/schema-generator';
-import App from '../../../src/App';
+import { PublicSubCategoryHub } from '../../../src/components/public/PublicSubCategoryHub';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -69,12 +69,9 @@ export default async function SubCategoryPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
-      <App
-        initialRoute={{
-          type: 'subcategory',
-          categorySlug: parentCategory?.slug || 'on-page-serp',
-          subCategorySlug: slug,
-        }}
+      <PublicSubCategoryHub
+        categorySlug={parentCategory?.slug || 'on-page-serp'}
+        subCategorySlug={slug}
       />
     </>
   );
